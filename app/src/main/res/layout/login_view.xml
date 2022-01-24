@@ -15,47 +15,61 @@
 
     <EditText
         android:id="@+id/usernameField"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.7"
+        android:layout_height="48dp"
         android:layout_marginBottom="10dp"
         android:ems="10"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@id/passwordDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/passwordDescription" />
+        tools:ignore="SpeakableTextPresentCheck"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/passwordDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/password"
-        app:layout_constraintBottom_toTopOf="@id/passwordField"
-        app:layout_constraintStart_toStartOf="@id/passwordField"/>
+        app:layout_constraintBottom_toTopOf="@id/passwordFieldWrapper"
+        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper"/>
 
-    <EditText
-        android:id="@+id/passwordField"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordFieldWrapper"
+        app:boxBackgroundColor="@color/transparent"
         android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.7"
         android:layout_marginBottom="30dp"
-        android:ems="10"
-        android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/usernameField"
+        app:layout_constraintStart_toStartOf="@id/usernameField"
+        app:passwordToggleEnabled="true">
+
+        <EditText
+            android:id="@+id/passwordField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            tools:ignore="SpeakableTextPresentCheck"
+            android:autofillHints="" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/loginErrorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Wrong credentials"
+        android:text="@string/wrong_credentials"
         android:visibility="invisible"
         android:textSize="12sp"
         android:textColor="@color/error"
-        app:layout_constraintTop_toBottomOf="@id/passwordField"
-        app:layout_constraintStart_toStartOf="@id/passwordField" />
+        app:layout_constraintTop_toBottomOf="@id/passwordFieldWrapper"
+        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper" />
 
     <Button
         android:id="@+id/loginButton"
