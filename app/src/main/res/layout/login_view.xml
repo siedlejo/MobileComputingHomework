@@ -10,8 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/username"
-        tools:layout_editor_absoluteX="112dp"
-        tools:layout_editor_absoluteY="340dp"
         app:layout_constraintBottom_toTopOf="@id/usernameField"
         app:layout_constraintStart_toStartOf="@id/usernameField"/>
 
@@ -32,8 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/password"
-        tools:layout_editor_absoluteX="112dp"
-        tools:layout_editor_absoluteY="340dp"
         app:layout_constraintBottom_toTopOf="@id/passwordField"
         app:layout_constraintStart_toStartOf="@id/passwordField"/>
 
@@ -41,7 +37,7 @@
         android:id="@+id/passwordField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="30dp"
         android:ems="10"
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
@@ -49,14 +45,27 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/loginErrorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Wrong credentials"
+        android:visibility="invisible"
+        android:textSize="12sp"
+        android:textColor="@color/error"
+        app:layout_constraintTop_toBottomOf="@id/passwordField"
+        app:layout_constraintStart_toStartOf="@id/passwordField" />
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.85" />
 </androidx.constraintlayout.widget.ConstraintLayout>
