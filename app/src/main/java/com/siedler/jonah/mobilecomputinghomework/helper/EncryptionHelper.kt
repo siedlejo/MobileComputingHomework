@@ -1,4 +1,4 @@
-package com.siedler.jonah.mobilecomputinghomework.ui.login
+package com.siedler.jonah.mobilecomputinghomework.helper
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties

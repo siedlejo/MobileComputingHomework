@@ -1,5 +1,6 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.login
 
+import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
 
 // A singleton to handle the authentication
