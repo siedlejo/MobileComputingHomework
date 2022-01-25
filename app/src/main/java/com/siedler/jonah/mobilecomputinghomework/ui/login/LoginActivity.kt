@@ -50,15 +50,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        if (validatePassword(username, password)) {
+        if (AuthenticationProvider.login(username, password)) {
             loginSuccessful()
         } else {
             loginFailed()
         }
-    }
-
-    private fun validatePassword(username: String, password: String): Boolean {
-        return username == "admin" && password == "admin123";
     }
 
     private fun setLoginButtonAvailability() {
