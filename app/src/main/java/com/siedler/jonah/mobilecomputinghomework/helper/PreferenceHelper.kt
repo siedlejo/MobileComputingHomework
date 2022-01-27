@@ -17,7 +17,7 @@ class PreferenceHelper {
     }
 
     fun deleteUserName() {
-        sharedPreferences.edit().remove(USER_NAME)
+        sharedPreferences.edit().remove(USER_NAME).commit()
     }
 
     fun getUserName(): String {
@@ -29,7 +29,7 @@ class PreferenceHelper {
     }
 
     fun deleteUserPassword() {
-        sharedPreferences.edit().remove(USER_PASSWORD_NAME)
+        sharedPreferences.edit().remove(USER_PASSWORD_NAME).commit()
     }
 
     fun getUserPassword(): String {
