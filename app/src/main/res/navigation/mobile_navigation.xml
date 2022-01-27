@@ -16,5 +16,4 @@
         android:name="com.siedler.jonah.mobilecomputinghomework.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
-
 </navigation>

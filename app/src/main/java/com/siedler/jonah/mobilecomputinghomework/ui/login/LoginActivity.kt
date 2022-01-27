@@ -91,8 +91,6 @@ class LoginActivity : AppCompatActivity() {
         val biometricPromptBuilder = BiometricPrompt.Builder(this)
             .setTitle(getString(R.string.alternative_authentication_title))
             .setSubtitle(getString(R.string.alternative_authentication_subtitle))
-            .setNegativeButton("Cancel", this.mainExecutor, { _, _ ->
-            })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             biometricPromptBuilder.setConfirmationRequired(false)
