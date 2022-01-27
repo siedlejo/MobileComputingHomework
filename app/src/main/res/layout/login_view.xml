@@ -5,18 +5,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Space
+        android:id="@+id/space1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@id/logoOulu"/>
+
+    <ImageView
+        android:id="@+id/logoOulu"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/space1"
+        app:layout_constraintBottom_toTopOf="@id/space2"
+        app:srcCompat="@drawable/oulu_logo" />
+
+    <Space
+        android:id="@+id/space2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/logoOulu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@id/usernameDescription"/>
+
     <TextView
         android:id="@+id/usernameDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/username"
         app:layout_constraintBottom_toTopOf="@id/usernameField"
-        app:layout_constraintStart_toStartOf="@id/usernameField"/>
+        app:layout_constraintStart_toStartOf="@id/usernameField" />
 
     <EditText
         android:id="@+id/usernameField"
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.7"
         android:layout_height="48dp"
         android:layout_marginBottom="10dp"
         android:ems="10"
@@ -25,8 +56,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="SpeakableTextPresentCheck"
-        android:autofillHints="" />
+        app:layout_constraintWidth_percent="0.7"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/passwordDescription"
@@ -34,18 +65,18 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         app:layout_constraintBottom_toTopOf="@id/passwordFieldWrapper"
-        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper"/>
+        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordFieldWrapper"
-        app:boxBackgroundColor="@color/transparent"
-        android:layout_height="wrap_content"
         android:layout_width="0dp"
-        app:layout_constraintWidth_percent="0.7"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        app:boxBackgroundColor="@color/transparent"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="@id/usernameField"
         app:layout_constraintStart_toStartOf="@id/usernameField"
+        app:layout_constraintWidth_percent="0.7"
         app:passwordToggleEnabled="true">
 
         <EditText
@@ -54,8 +85,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:minHeight="48dp"
-            tools:ignore="SpeakableTextPresentCheck"
-            android:autofillHints="" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,18 +95,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/wrong_credentials"
-        android:visibility="invisible"
-        android:textSize="12sp"
         android:textColor="@color/error"
-        app:layout_constraintTop_toBottomOf="@id/passwordFieldWrapper"
-        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper" />
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper"
+        app:layout_constraintTop_toBottomOf="@id/passwordFieldWrapper" />
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
         android:enabled="false"
+        android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

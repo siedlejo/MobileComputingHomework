@@ -12,6 +12,8 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="wrong_credentials">Wrong credentials</string>
+    <string name="biometric_authentication_title">Biometric Authentication</string>
+    <string name="biometric_authentication_subtitle">Skip the login by using the biometric login</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>

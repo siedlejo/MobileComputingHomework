@@ -13,7 +13,11 @@ class PreferenceHelper {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
 
     fun storeUserName(value: String) {
-        print(sharedPreferences.edit().putString(USER_NAME, value).commit())
+        sharedPreferences.edit().putString(USER_NAME, value).commit()
+    }
+
+    fun deleteUserName() {
+        sharedPreferences.edit().remove(USER_NAME)
     }
 
     fun getUserName(): String {
@@ -21,7 +25,11 @@ class PreferenceHelper {
     }
 
     fun storeUserPassword(value: String) {
-        print(sharedPreferences.edit().putString(USER_PASSWORD_NAME, value).commit())
+        sharedPreferences.edit().putString(USER_PASSWORD_NAME, value).commit()
+    }
+
+    fun deleteUserPassword() {
+        sharedPreferences.edit().remove(USER_PASSWORD_NAME)
     }
 
     fun getUserPassword(): String {

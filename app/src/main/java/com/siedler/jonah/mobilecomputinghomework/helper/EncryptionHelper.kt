@@ -54,7 +54,7 @@ class EncryptionHelper {
      */
     fun decrypt(ciphertextPlusIV: String, key: Key): String {
         var splitCiphertext = ciphertextPlusIV.split(IV_SEPARATOR.toRegex())
-        if (splitCiphertext.size != 2) throw IllegalArgumentException("Invalid ciphertext. No IV was given.")
+        if (splitCiphertext.size != 2) return ""
 
         // extract the parts of the given ciphertext
         val initializationVector = Base64.decode(splitCiphertext[0], Base64.NO_WRAP)
