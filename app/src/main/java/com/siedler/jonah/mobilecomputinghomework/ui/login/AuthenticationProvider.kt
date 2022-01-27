@@ -1,5 +1,6 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.login
 
+import com.siedler.jonah.mobilecomputinghomework.db.user.User
 import com.siedler.jonah.mobilecomputinghomework.db.user.UserDB
 import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
@@ -8,6 +9,13 @@ import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
 object AuthenticationProvider {
     private val preferenceHelper = PreferenceHelper()
     private val encryptionHelper: EncryptionHelper = EncryptionHelper()
+
+    // create a default user, wouldn't exist in reality
+    init {
+        if (UserDB.getInstance().userDao().getUser("admin") == null) {
+            UserDB.getInstance().userDao().insertUser(User("admin", encryptionHelper.generateHashedPassword("admin123")))
+        }
+    }
 
     fun login(username: String, password: String): Boolean {
         val user = UserDB.getInstance().userDao().getUser(username) ?: return false
