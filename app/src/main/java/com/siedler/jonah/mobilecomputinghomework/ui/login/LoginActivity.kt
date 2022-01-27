@@ -4,6 +4,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.biometrics.BiometricManager
 import android.hardware.biometrics.BiometricPrompt
 import android.os.Build
 import android.os.Bundle
@@ -88,16 +89,19 @@ class LoginActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     fun showBiometricLogin() {
         val biometricPromptBuilder = BiometricPrompt.Builder(this)
-            .setTitle(getString(R.string.biometric_authentication_title))
-            .setSubtitle(getString(R.string.biometric_authentication_subtitle))
+            .setTitle(getString(R.string.alternative_authentication_title))
+            .setSubtitle(getString(R.string.alternative_authentication_subtitle))
             .setNegativeButton("Cancel", this.mainExecutor, { _, _ ->
             })
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             biometricPromptBuilder.setConfirmationRequired(false)
         }
-        val biometricPrompt : BiometricPrompt = biometricPromptBuilder.build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            biometricPromptBuilder.setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+        }
 
+        val biometricPrompt : BiometricPrompt = biometricPromptBuilder.build()
         biometricPrompt.authenticate(CancellationSignal(), mainExecutor, authenticationCallback)
     }
 
