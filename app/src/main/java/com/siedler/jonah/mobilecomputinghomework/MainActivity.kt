@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    fun logout() {
+    private fun logout() {
         AuthenticationProvider.logout()
         val loginActivity = Intent(this, LoginActivity::class.java)
         startActivity(loginActivity)
