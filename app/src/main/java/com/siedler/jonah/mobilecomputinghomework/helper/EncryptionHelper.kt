@@ -3,6 +3,7 @@ package com.siedler.jonah.mobilecomputinghomework.helper
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import org.mindrot.jbcrypt.BCrypt
 import java.security.Key
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -34,6 +35,14 @@ class EncryptionHelper {
         }
     }
 
+    fun generateHashedPassword(password: String): String {
+        return BCrypt.hashpw(password, BCrypt.gensalt())
+    }
+
+    fun equalToHashedPassword(clearTextPassword: String, hashedPassword: String): Boolean {
+        return BCrypt.checkpw(clearTextPassword, hashedPassword)
+    }
+
     fun getPasswordKey(): Key {
         return keyStore.getKey(PASSWORD_KEY_ALIAS, null)
     }
@@ -49,9 +58,9 @@ class EncryptionHelper {
         return initializationVector + IV_SEPARATOR + ciphertext
     }
 
-    /*
+    /**
     The given ciphertext was include a initialization vector in the form IV;cipher
-     */
+     **/
     fun decrypt(ciphertextPlusIV: String, key: Key): String {
         var splitCiphertext = ciphertextPlusIV.split(IV_SEPARATOR.toRegex())
         if (splitCiphertext.size != 2) return ""

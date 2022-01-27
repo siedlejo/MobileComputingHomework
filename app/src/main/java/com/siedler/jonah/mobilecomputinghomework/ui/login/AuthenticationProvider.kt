@@ -1,25 +1,36 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.login
 
+import com.siedler.jonah.mobilecomputinghomework.db.user.UserDB
 import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
-import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider.encryptionHandler
 
 // A singleton to handle the authentication
 object AuthenticationProvider {
     private val preferenceHelper = PreferenceHelper()
-    private val encryptionHandler: EncryptionHelper = EncryptionHelper()
+    private val encryptionHelper: EncryptionHelper = EncryptionHelper()
 
     fun login(username: String, password: String): Boolean {
-        return if (username == "admin" && password == "admin123") {
-            val key = encryptionHandler.getPasswordKey()
-            val encryptedPassword = encryptionHandler.encrypt(password, key)
+        val user = UserDB.getInstance().userDao().getUser(username) ?: return false
 
-            preferenceHelper.storeUserName(username)
-            preferenceHelper.storeUserPassword(encryptedPassword)
-            true
-        } else {
-            false
+        // the given password matches to the password stored in the database
+        if (encryptionHelper.equalToHashedPassword(password, user.password)) {
+            storeUserCredentials(username, password)
+            return true
         }
+
+        return false
+    }
+
+    /**
+     * This method stores the user credentials in the Shared Preferences
+     * Those credentials can then be used to login via biometric/device authentication
+     * The password is encrypted before it is stored
+     */
+    private fun storeUserCredentials(username: String, password: String) {
+        val key = encryptionHelper.getPasswordKey()
+        val encryptedPassword = encryptionHelper.encrypt(password, key)
+        preferenceHelper.storeUserName(username)
+        preferenceHelper.storeUserPassword(encryptedPassword)
     }
 
     fun storedCredentialsExist(): Boolean {
@@ -35,8 +46,8 @@ object AuthenticationProvider {
 
     fun getStoredPassword(): String {
         val password = preferenceHelper.getUserPassword()
-        val key = encryptionHandler.getPasswordKey()
-        return encryptionHandler.decrypt(password, key)
+        val key = encryptionHelper.getPasswordKey()
+        return encryptionHelper.decrypt(password, key)
     }
 
     fun logout() {
