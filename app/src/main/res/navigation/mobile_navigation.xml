@@ -10,10 +10,4 @@
         android:name="com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.siedler.jonah.mobilecomputinghomework.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
 </navigation>
