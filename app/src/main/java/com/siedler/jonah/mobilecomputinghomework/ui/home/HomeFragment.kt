@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -67,7 +68,6 @@ class HomeFragment : Fragment() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color.Black)
                 .padding(10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -92,6 +92,7 @@ class HomeFragment : Fragment() {
                 )
             }
         }
+        Divider(color = Color.Black, thickness = 1.dp)
     }
 
     private fun getPlaceholderMessages(): List<Reminder> {
