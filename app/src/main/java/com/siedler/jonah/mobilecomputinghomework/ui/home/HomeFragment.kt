@@ -21,8 +21,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
-    lateinit var listViewComposable: ComposeView
-    lateinit var fab: FloatingActionButton
+    private lateinit var listViewComposable: ComposeView
+    private lateinit var fab: FloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater,
