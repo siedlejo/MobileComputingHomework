@@ -1,7 +1,6 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.reminder
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.siedler.jonah.mobilecomputinghomework.R
 

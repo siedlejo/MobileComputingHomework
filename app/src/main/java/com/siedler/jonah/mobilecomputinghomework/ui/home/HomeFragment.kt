@@ -5,13 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import java.util.*
@@ -52,13 +62,41 @@ class HomeFragment : Fragment() {
 
     @Composable
     fun MessageRow(reminder: Reminder) {
-        Text(reminder.message)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color.Black)
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Text(
+                reminder.message,
+                Modifier.weight(6f)
+            )
+            Column(
+                Modifier.alignByBaseline().height(60.dp).weight(3f),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "7:55",
+                    Modifier.weight(3f).fillMaxHeight(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 25.sp
+                )
+                Text(
+                    "Tue, Feb 1, 22",
+                    Modifier.weight(2f)
+                )
+            }
+        }
     }
 
     private fun getPlaceholderMessages(): List<Reminder> {
         var reminderList: MutableList<Reminder> = LinkedList();
         for (i in 0..10) {
-            reminderList.add(Reminder("$i"))
+            reminderList.add(Reminder("This is the placeholder message with the number $i. It exists only for demonstration purposes."))
         }
         return reminderList
     }
