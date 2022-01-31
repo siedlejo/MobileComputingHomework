@@ -15,9 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -51,11 +48,15 @@ class HomeFragment : Fragment() {
 
     @Composable
     fun MessageList(messages: List<Reminder>) {
-        LazyColumn {
+        LazyColumn(
+        ) {
             items(1) {
                 messages.forEach { reminder ->
                     MessageRow(reminder)
                 }
+                Spacer(
+                    modifier = Modifier.height(100.dp)
+                )
             }
         }
     }
