@@ -1,24 +1,20 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.siedler.jonah.mobilecomputinghomework.R
-import com.siedler.jonah.mobilecomputinghomework.databinding.FragmentHomeBinding
+import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import java.util.*
-import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
@@ -36,8 +32,8 @@ class HomeFragment : Fragment() {
 
         fab = layout.findViewById(R.id.fab)
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            val addReminderActivity = Intent(context, AddReminderActivity::class.java)
+            startActivity(addReminderActivity)
         }
 
         return layout

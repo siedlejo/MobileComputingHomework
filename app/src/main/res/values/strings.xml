@@ -17,4 +17,6 @@
     <string name="logout">Logout</string>
 
     <string name="menu_home">Home</string>
+
+    <string name="add_reminder_view_title">Add Reminder</string>
 </resources>
