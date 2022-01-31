@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -20,6 +23,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var initialLetterCircle: TextView
+    private lateinit var usernameTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
+
+        val username = AuthenticationProvider.getAuthenticatedUser().userName
+        initialLetterCircle = binding.navView.getHeaderView(0).findViewById(R.id.initialLetterCircle)
+        initialLetterCircle.text = username[0].toString().uppercase()
+        usernameTextView = binding.navView.getHeaderView(0).findViewById(R.id.usernameTextView)
+        usernameTextView.text = username
     }
 
     override fun onSupportNavigateUp(): Boolean {

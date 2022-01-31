@@ -6,9 +6,11 @@ import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
 
 // A singleton to handle the authentication
-object AuthenticationProvider {
+object
+AuthenticationProvider {
     private val preferenceHelper = PreferenceHelper()
     private val encryptionHelper: EncryptionHelper = EncryptionHelper()
+    private var user: User? = null
 
     // create a default user, wouldn't exist in reality
     init {
@@ -17,12 +19,20 @@ object AuthenticationProvider {
         }
     }
 
+    /**
+     * Returns the user which was authenticated during the login process
+     */
+    fun getAuthenticatedUser(): User {
+        return user!!
+    }
+
     fun login(username: String, password: String): Boolean {
         val user = UserDB.getInstance().userDao().getUser(username) ?: return false
 
         // the given password matches to the password stored in the database
         if (encryptionHelper.equalToHashedPassword(password, user.password)) {
             storeUserCredentials(username, password)
+            this.user = user
             return true
         }
 
@@ -59,6 +69,7 @@ object AuthenticationProvider {
     }
 
     fun logout() {
+        this.user = null
         preferenceHelper.deleteUserName()
         preferenceHelper.deleteUserPassword()
     }
