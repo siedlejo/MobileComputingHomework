@@ -48,11 +48,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
-        val username = AuthenticationProvider.getAuthenticatedUser().userName
+        val firstName = AuthenticationProvider.getAuthenticatedUser().firstName
         initialLetterCircle = binding.navView.getHeaderView(0).findViewById(R.id.initialLetterCircle)
-        initialLetterCircle.text = username[0].toString().uppercase()
+        initialLetterCircle.text = firstName[0].toString().uppercase()
         usernameTextView = binding.navView.getHeaderView(0).findViewById(R.id.usernameTextView)
-        usernameTextView.text = username
+        usernameTextView.text = firstName
     }
 
     override fun onSupportNavigateUp(): Boolean {

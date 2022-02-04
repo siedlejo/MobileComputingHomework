@@ -15,7 +15,7 @@ AuthenticationProvider {
     // create a few default user, wouldn't exist in reality
     init {
         if (UserDB.getInstance().userDao().getUser("admin") == null) {
-            UserDB.getInstance().userDao().insertUser(User("admin", encryptionHelper.generateHashedPassword("admin123")))
+            UserDB.getInstance().userDao().insertUser(User("admin", encryptionHelper.generateHashedPassword("admin123"), "Administrator", "Admin"))
         }
     }
 

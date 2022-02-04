@@ -7,5 +7,7 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey
     val userName: String,
-    val password: String
+    val password: String,
+    val firstName: String,
+    val lastName: String
 )
