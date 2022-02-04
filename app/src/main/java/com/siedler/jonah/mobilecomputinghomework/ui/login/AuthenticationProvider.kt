@@ -12,7 +12,7 @@ AuthenticationProvider {
     private val encryptionHelper: EncryptionHelper = EncryptionHelper()
     private var user: User? = null
 
-    // create a default user, wouldn't exist in reality
+    // create a few default user, wouldn't exist in reality
     init {
         if (UserDB.getInstance().userDao().getUser("admin") == null) {
             UserDB.getInstance().userDao().insertUser(User("admin", encryptionHelper.generateHashedPassword("admin123")))

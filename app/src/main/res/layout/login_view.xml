@@ -70,10 +70,10 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordFieldWrapper"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:layout_height="wrap_content"
         app:boxBackgroundColor="@color/transparent"
-        app:layout_constraintBottom_toTopOf="@+id/loginButton"
+        app:layout_constraintBottom_toTopOf="@+id/signupButton"
         app:layout_constraintEnd_toEndOf="@id/usernameField"
         app:layout_constraintStart_toStartOf="@id/usernameField"
         app:layout_constraintWidth_percent="0.7"
@@ -101,6 +101,15 @@
         app:layout_constraintStart_toStartOf="@id/passwordFieldWrapper"
         app:layout_constraintTop_toBottomOf="@id/passwordFieldWrapper" />
 
+    <TextView
+        android:id="@+id/signupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/passwordFieldWrapper"
+        app:layout_constraintBottom_toTopOf="@+id/loginButton"
+        android:layout_marginBottom="20dp"
+        android:text="Signup new user" />
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
@@ -111,5 +120,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.85" />
+        app:layout_constraintVertical_bias="0.9" />
 </androidx.constraintlayout.widget.ConstraintLayout>

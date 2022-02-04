@@ -18,12 +18,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.ui.usersignup.UserSignupActivity
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var usernameTextField: TextView
     private lateinit var passwordTextField: TextView
     private lateinit var loginButton: Button
     private lateinit var loginErrorText: TextView
+    private lateinit var signupButton: TextView
 
     private var username: String = ""
     private var password: String = ""
@@ -59,6 +61,14 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener { login()}
 
         loginErrorText = findViewById(R.id.loginErrorText)
+
+        signupButton = findViewById(R.id.signupButton)
+        signupButton.setOnClickListener { openLoginPage() }
+    }
+
+    private fun openLoginPage() {
+        val signupActivity = Intent(this, UserSignupActivity::class.java)
+        startActivity(signupActivity)
     }
 
     private fun login() {

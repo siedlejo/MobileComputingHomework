@@ -9,6 +9,7 @@
     <string name="login_view_title">Login</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
     <string name="login">Login</string>
     <string name="wrong_credentials">Wrong credentials</string>
     <string name="alternative_authentication_title">Alternative Authentication</string>
@@ -18,4 +19,8 @@
     <string name="menu_home">Home</string>
 
     <string name="add_reminder_view_title">Add Reminder</string>
+
+    <string name="user_signup_view_title">User Signup</string>
+    <string name="full_name">Full name</string>
+    <string name="signup">Signup</string>
 </resources>
