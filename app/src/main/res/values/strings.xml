@@ -21,6 +21,7 @@
     <string name="add_reminder_view_title">Add Reminder</string>
 
     <string name="user_signup_view_title">User Signup</string>
-    <string name="full_name">Full name</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
     <string name="signup">Signup</string>
 </resources>
