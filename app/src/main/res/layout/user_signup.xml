@@ -11,108 +11,137 @@
 
         <TextView
             android:id="@+id/firstNameTextView"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/first_name"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/firstNameEditText"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
             android:id="@+id/firstNameEditText"
-            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/firstNameTextView"
-            app:layout_constraintBottom_toTopOf="@id/lastNameTextView"/>
+            app:layout_constraintTop_toBottomOf="@id/firstNameTextView"/>
+
+        <TextView
+            android:id="@+id/invalidFirstNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/invalid_first_name_error"
+            android:textColor="@color/error"
+            android:textSize="12sp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@id/firstNameEditText"
+            app:layout_constraintStart_toStartOf="@id/repeatPasswordEditText" />
 
         <TextView
             android:id="@+id/lastNameTextView"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/last_name"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/firstNameEditText"
-            app:layout_constraintBottom_toTopOf="@id/lastNameEditText"/>
+            app:layout_constraintTop_toBottomOf="@id/invalidFirstNameText"/>
 
         <EditText
             android:id="@+id/lastNameEditText"
-            android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/lastNameTextView"
-            app:layout_constraintBottom_toTopOf="@id/usernameTextView"/>
+            app:layout_constraintTop_toBottomOf="@id/lastNameTextView"/>
+
+        <TextView
+            android:id="@+id/invalidLastNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/invalid_Last_name_error"
+            android:textColor="@color/error"
+            android:visibility="invisible"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/lastNameEditText"
+            app:layout_constraintStart_toStartOf="@id/lastNameEditText" />
 
         <TextView
             android:id="@+id/usernameTextView"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_percent="0.85"
             android:text="@string/username"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lastNameEditText"
-            app:layout_constraintBottom_toTopOf="@id/usernameEditText"/>
+            app:layout_constraintTop_toBottomOf="@id/invalidLastNameText"/>
 
         <EditText
             android:id="@+id/usernameEditText"
-            android:layout_marginVertical="10dp"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/usernameTextView"
-            app:layout_constraintBottom_toTopOf="@id/passwordTextView"/>
+            app:layout_constraintTop_toBottomOf="@id/usernameTextView"/>
+
+        <TextView
+            android:id="@+id/invalidUsernameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/invalid_username_spaces"
+            android:visibility="invisible"
+            android:textColor="@color/error"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/usernameEditText"
+            app:layout_constraintStart_toStartOf="@id/repeatPasswordEditText" />
 
         <TextView
             android:id="@+id/passwordTextView"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/password"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/usernameEditText"
-            app:layout_constraintBottom_toTopOf="@id/passwordEditText"/>
+            app:layout_constraintTop_toBottomOf="@id/invalidUsernameText"/>
 
         <EditText
             android:id="@+id/passwordEditText"
-            android:layout_marginVertical="10dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/passwordTextView"
-            app:layout_constraintBottom_toTopOf="@id/repeatPasswordTextView"/>
+            app:layout_constraintTop_toBottomOf="@id/passwordTextView"/>
 
+        <TextView
+            android:id="@+id/invalidPasswordText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/invalid_password_length"
+            android:visibility="invisible"
+            android:textColor="@color/error"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+            app:layout_constraintStart_toStartOf="@id/passwordEditText" />
 
         <TextView
             android:id="@+id/repeatPasswordTextView"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/repeat_password"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-            app:layout_constraintBottom_toTopOf="@id/repeatPasswordEditText"/>
+            app:layout_constraintTop_toBottomOf="@id/invalidPasswordText"/>
 
         <EditText
             android:id="@+id/repeatPasswordEditText"
-            android:layout_marginVertical="10dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -120,13 +149,25 @@
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
             app:layout_constraintTop_toBottomOf="@id/repeatPasswordTextView" />
 
+        <TextView
+            android:id="@+id/invalidRepeatPasswordText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:text="@string/invalid_repeat_password_error"
+            android:textColor="@color/error"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/repeatPasswordEditText"
+            app:layout_constraintStart_toStartOf="@id/repeatPasswordEditText" />
+
         <Button
+            android:id="@+id/signupButton"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signup"
-            android:layout_marginVertical="10dp"
             app:layout_constraintStart_toStartOf="@+id/usernameTextView"
             app:layout_constraintEnd_toEndOf="@id/usernameTextView"
-            app:layout_constraintTop_toBottomOf="@id/repeatPasswordEditText"/>
+            app:layout_constraintTop_toBottomOf="@id/invalidRepeatPasswordText"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

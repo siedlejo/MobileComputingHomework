@@ -14,9 +14,19 @@ AuthenticationProvider {
 
     // create a few default user, wouldn't exist in reality
     init {
-        if (UserDB.getInstance().userDao().getUser("admin") == null) {
-            UserDB.getInstance().userDao().insertUser(User("admin", encryptionHelper.generateHashedPassword("admin123"), "Administrator", "Admin"))
+        if (!userExists("admin")) {
+            addUser("admin", "admin123", "Administrator", "Admin")
         }
+    }
+
+    fun addUser(username: String, password: String, firstName: String, lastName: String) {
+        val encryptedPassword = encryptionHelper.generateHashedPassword(password)
+        val newUser = User(username, encryptedPassword, firstName, lastName)
+        UserDB.getInstance().userDao().insertUser(newUser)
+    }
+
+    fun userExists(username: String): Boolean {
+        return UserDB.getInstance().userDao().getUser(username) != null
     }
 
     /**
