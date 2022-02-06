@@ -29,6 +29,6 @@
     <string name="invalid_username_already_exists">The username already exists</string>
     <string name="invalid_username_spaces">The username cannot contain spaces</string>
     <string name="invalid_password_error_spaces">The password cannot contain spaces</string>
-    <string name="invalid_password_length">The password must be at least 5 characters long</string>
+    <string name="invalid_password_length">The password must be at least 6 characters long</string>
     <string name="invalid_repeat_password_error">The two password differ</string>
 </resources>
