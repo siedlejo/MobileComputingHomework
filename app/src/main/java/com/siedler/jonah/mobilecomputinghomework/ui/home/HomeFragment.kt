@@ -84,8 +84,8 @@ class HomeFragment : Fragment() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
-                .clickable { editReminder(reminder) },
+                .clickable { editReminder(reminder) }
+                .padding(10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
