@@ -1,12 +1,17 @@
 package com.siedler.jonah.mobilecomputinghomework.db.reminder
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
+import com.siedler.jonah.mobilecomputinghomework.db.user.User
+import com.siedler.jonah.mobilecomputinghomework.helper.DateConverter
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
-@Database(entities = [Reminder::class], version = 1, exportSchema = false)
+@Database(entities = [Reminder::class, User::class], version = 1, exportSchema = false)
+@TypeConverters(DateConverter::class)
 abstract class ReminderDB: RoomDatabase() {
     abstract fun reminderDao() : ReminderDao
 

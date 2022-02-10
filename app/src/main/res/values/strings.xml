@@ -19,6 +19,8 @@
     <string name="menu_home">Home</string>
 
     <string name="add_reminder_view_title">Add Reminder</string>
+    <string name="set_reminder_date">Set the reminder date</string>
+    <string name="set_reminder_message">Message</string>
 
     <string name="user_signup_view_title">User Signup</string>
     <string name="first_name">First name</string>

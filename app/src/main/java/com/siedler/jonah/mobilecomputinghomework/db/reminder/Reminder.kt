@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.siedler.jonah.mobilecomputinghomework.db.user.User
 import java.util.*
 
+
 @Entity(
     tableName = "reminder",
     foreignKeys = [ForeignKey(
