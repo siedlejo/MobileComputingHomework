@@ -71,8 +71,8 @@ class AddReminderActivity: AppCompatActivity() {
         timePicker.minute = calendar.get(Calendar.MINUTE)
         datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
         messageEditText.setText(reminder!!.message)
-        locationXEditText.setText(reminder!!.locationX.toString())
-        locationYEditText.setText(reminder!!.locationY.toString())
+        locationXEditText.setText(reminder!!.locationX?.toString() ?: "")
+        locationYEditText.setText(reminder!!.locationY?.toString() ?: "")
     }
 
     private fun saveReminder() {
