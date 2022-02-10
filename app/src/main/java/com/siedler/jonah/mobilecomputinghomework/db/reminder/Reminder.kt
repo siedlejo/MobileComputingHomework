@@ -19,11 +19,11 @@ import java.util.*
 data class Reminder(
     @PrimaryKey(autoGenerate = true)
     val reminderId: Long = 0,
-    val message: String,
-    val locationX: Double?,
-    val locationY: Double?,
-    val reminderTime: Date,
-    val creationTime: Date,
-    val creatorId: String,
-    val reminderSeen: Boolean
+    var message: String,
+    var locationX: Double?,
+    var locationY: Double?,
+    var reminderTime: Date,
+    var creationTime: Date,
+    var creatorId: String,
+    var reminderSeen: Boolean
 )

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
@@ -23,12 +24,9 @@ import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
+import com.siedler.jonah.mobilecomputinghomework.ui.reminder.REMINDER_INTENT_EXTRA_KEY
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
 
 class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
@@ -59,6 +57,12 @@ class HomeFragment : Fragment() {
         listViewComposable.setContent { MessageList(messages = reminderList) }
     }
 
+    private fun editReminder(reminder: Reminder) {
+        val addReminderActivity = Intent(context, AddReminderActivity::class.java)
+        addReminderActivity.putExtra(REMINDER_INTENT_EXTRA_KEY, reminder.reminderId)
+        startActivity(addReminderActivity)
+    }
+
     @Composable
     fun MessageList(messages: List<Reminder>) {
         LazyColumn(
@@ -80,7 +84,8 @@ class HomeFragment : Fragment() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(10.dp)
+                .clickable { editReminder(reminder) },
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(

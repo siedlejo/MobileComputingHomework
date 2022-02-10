@@ -1,6 +1,7 @@
 package com.siedler.jonah.mobilecomputinghomework.db.reminder
 
 import androidx.room.*
+import com.siedler.jonah.mobilecomputinghomework.db.user.User
 
 @Dao
 interface ReminderDao {
@@ -12,6 +13,9 @@ interface ReminderDao {
 
     @Delete
     fun deleteReminder(reminder: Reminder)
+
+    @Query("Select * from reminder where reminderId=:reminderId")
+    fun getReminder(reminderId: Long): Reminder?
 
     @Query("SELECT * from reminder")
     fun getAllReminder(): List<Reminder>
