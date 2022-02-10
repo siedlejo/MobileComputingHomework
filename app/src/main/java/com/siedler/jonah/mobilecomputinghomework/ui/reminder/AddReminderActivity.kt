@@ -64,6 +64,7 @@ class AddReminderActivity: AppCompatActivity() {
             return
         }
 
+        title = getString(R.string.edit_reminder_view_title)
         val calendar = Calendar.getInstance()
         calendar.time = (reminder!!.reminderTime)
         timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
