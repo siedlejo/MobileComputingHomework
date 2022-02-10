@@ -16,11 +16,11 @@ abstract class ReminderDB: RoomDatabase() {
         fun getInstance(): ReminderDB {
             val context: Context = MyApplication.instance.applicationContext
             synchronized(ReminderDB::class) {
-                ReminderDB.INSTANCE = Room.databaseBuilder(context.applicationContext,
+                INSTANCE = Room.databaseBuilder(context.applicationContext,
                     ReminderDB::class.java, "reminder.db").allowMainThreadQueries()
                     .build()
             }
-            return ReminderDB.INSTANCE
+            return INSTANCE
         }
     }
 }
