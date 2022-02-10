@@ -5,20 +5,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
@@ -32,6 +43,8 @@ class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
     private lateinit var fab: FloatingActionButton
 
+    private val reminderList = MutableLiveData<List<Reminder>>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,9 +53,10 @@ class HomeFragment : Fragment() {
         val layout =  inflater.inflate(R.layout.fragment_home, container, false)
 
         listViewComposable = layout.findViewById(R.id.listViewComposable)
+        listViewComposable.setContent { ReminderList() }
 
         fab = layout.findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
             val addReminderActivity = Intent(context, AddReminderActivity::class.java)
             startActivity(addReminderActivity)
         }
@@ -53,8 +67,14 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val reminderList = AppDB.getInstance().reminderDao().getAllReminder()
-        listViewComposable.setContent { MessageList(messages = reminderList) }
+        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminder())
+    }
+
+    private fun removeReminderFromDB(reminder: Reminder) {
+        val newList = reminderList.value?.toMutableList() ?: emptyList<Reminder>().toMutableList()
+        newList.remove(reminder)
+        reminderList.postValue(newList)
+        AppDB.getInstance().reminderDao().deleteReminder(reminder)
     }
 
     private fun editReminder(reminder: Reminder) {
@@ -63,57 +83,117 @@ class HomeFragment : Fragment() {
         startActivity(addReminderActivity)
     }
 
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
     @Composable
-    fun MessageList(messages: List<Reminder>) {
+    fun ReminderList() {
+        val items: List<Reminder>? by reminderList.observeAsState()
+
         LazyColumn(
         ) {
-            items(1) {
-                messages.forEach { reminder ->
-                    MessageRow(reminder)
+            items(items?: emptyList(), key = {item: Reminder -> item.reminderId }){ reminder ->
+                val dismissState = rememberDismissState()
+
+                if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+                    removeReminderFromDB(reminder)
                 }
-                Spacer(
-                    modifier = Modifier.height(100.dp)
+
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { FractionalThreshold(0.4f) },
+                    background = {
+                        val scale by animateFloatAsState(
+                            if (dismissState.targetValue == DismissValue.Default) 1f else 1.25f
+                        )
+
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(Color.Red),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = "Delete Icon",
+                                modifier = Modifier
+                                    .scale(scale)
+                                    .padding(10.dp, 0.dp)
+                            )
+                        }
+                    },
+                    dismissContent = {
+                        Card(
+                            elevation = animateDpAsState(
+                                if (dismissState.dismissDirection != null) 4.dp else 0.dp
+                            ).value,
+                            shape = RectangleShape,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(alignment = Alignment.CenterVertically)
+                        ) {
+                            Row(
+                                modifier= Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+
+                                ReminderRow(reminder)
+                            }
+                        }
+                    }
                 )
+            }
+            items(1) {
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
     }
 
     @Composable
-    fun MessageRow(reminder: Reminder) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { editReminder(reminder) }
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Text(
-                reminder.message,
-                Modifier.weight(6f)
-            )
-            Column(
-                Modifier
-                    .alignByBaseline()
-                    .height(60.dp)
-                    .weight(3f),
-                verticalArrangement = Arrangement.spacedBy(5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+    fun ReminderRow(reminder: Reminder) {
+        Column() {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { editReminder(reminder) }
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    SimpleDateFormat("HH:mm", Locale.getDefault()).format(reminder.reminderTime),
+                    reminder.message,
+                    Modifier.weight(6f)
+                )
+                Column(
                     Modifier
-                        .weight(3f)
-                        .fillMaxHeight(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 25.sp
-                )
-                Text(
-                    SimpleDateFormat("EEE, MMM d, yy", Locale.getDefault()).format(reminder.reminderTime),
-                    Modifier.weight(2f)
-                )
+                        .alignByBaseline()
+                        .height(60.dp)
+                        .weight(3f),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        SimpleDateFormat(
+                            "HH:mm",
+                            Locale.getDefault()
+                        ).format(reminder.reminderTime),
+                        Modifier
+                            .weight(3f)
+                            .fillMaxHeight(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 25.sp
+                    )
+                    Text(
+                        SimpleDateFormat(
+                            "EEE, MMM d, yy",
+                            Locale.getDefault()
+                        ).format(reminder.reminderTime),
+                        Modifier.weight(2f)
+                    )
+                }
             }
+            Divider(color = Color.Black, thickness = 1.dp)
         }
-        Divider(color = Color.Black, thickness = 1.dp)
     }
 }
