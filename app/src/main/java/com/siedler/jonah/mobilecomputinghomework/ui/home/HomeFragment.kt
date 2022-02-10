@@ -34,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.REMINDER_INTENT_EXTRA_KEY
 import java.text.SimpleDateFormat
@@ -67,7 +68,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminder())
+        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser().userName))
     }
 
     private fun removeReminderFromDB(reminder: Reminder) {
