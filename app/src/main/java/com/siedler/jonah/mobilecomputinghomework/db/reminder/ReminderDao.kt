@@ -1,9 +1,6 @@
 package com.siedler.jonah.mobilecomputinghomework.db.reminder
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface ReminderDao {
@@ -15,4 +12,7 @@ interface ReminderDao {
 
     @Delete
     fun deleteReminder(reminder: Reminder)
+
+    @Query("SELECT * from reminder")
+    fun getAllReminder(): List<Reminder>
 }

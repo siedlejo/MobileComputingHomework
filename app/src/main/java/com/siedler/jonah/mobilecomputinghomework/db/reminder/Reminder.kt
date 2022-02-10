@@ -16,12 +16,12 @@ import java.util.*
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Reminder (
-    @PrimaryKey
-    val reminderId: String,
+data class Reminder(
+    @PrimaryKey(autoGenerate = true)
+    val reminderId: Long = 0,
     val message: String,
-    val locationX: Double,
-    val locationY: Double,
+    val locationX: Double?,
+    val locationY: Double?,
     val reminderTime: Date,
     val creationTime: Date,
     val creatorId: String,

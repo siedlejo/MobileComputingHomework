@@ -1,28 +1,31 @@
-package com.siedler.jonah.mobilecomputinghomework.db.reminder
+package com.siedler.jonah.mobilecomputinghomework.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
+import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.db.reminder.ReminderDao
 import com.siedler.jonah.mobilecomputinghomework.db.user.User
+import com.siedler.jonah.mobilecomputinghomework.db.user.UserDao
 import com.siedler.jonah.mobilecomputinghomework.helper.DateConverter
-import java.text.DateFormat
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Database(entities = [Reminder::class, User::class], version = 1, exportSchema = false)
 @TypeConverters(DateConverter::class)
-abstract class ReminderDB: RoomDatabase() {
+abstract class AppDB: RoomDatabase() {
     abstract fun reminderDao() : ReminderDao
+    abstract fun userDao() : UserDao
 
     companion object {
-        private var INSTANCE : ReminderDB = getInstance()
+        private var INSTANCE: AppDB = getInstance()
 
-        fun getInstance(): ReminderDB {
+        fun getInstance(): AppDB {
             val context: Context = MyApplication.instance.applicationContext
-            synchronized(ReminderDB::class) {
+            synchronized(AppDB::class) {
                 INSTANCE = Room.databaseBuilder(context.applicationContext,
-                    ReminderDB::class.java, "reminder.db").allowMainThreadQueries()
+                    AppDB::class.java, "app.db").allowMainThreadQueries()
                     .build()
             }
             return INSTANCE

@@ -20,8 +20,15 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.db.AppDB
+import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
@@ -35,7 +42,6 @@ class HomeFragment : Fragment() {
         val layout =  inflater.inflate(R.layout.fragment_home, container, false)
 
         listViewComposable = layout.findViewById(R.id.listViewComposable)
-        listViewComposable.setContent { MessageList(getPlaceholderMessages()) }
 
         fab = layout.findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -44,6 +50,13 @@ class HomeFragment : Fragment() {
         }
 
         return layout
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val reminderList = AppDB.getInstance().reminderDao().getAllReminder()
+        listViewComposable.setContent { MessageList(messages = reminderList) }
     }
 
     @Composable
@@ -75,30 +88,27 @@ class HomeFragment : Fragment() {
                 Modifier.weight(6f)
             )
             Column(
-                Modifier.alignByBaseline().height(60.dp).weight(3f),
+                Modifier
+                    .alignByBaseline()
+                    .height(60.dp)
+                    .weight(3f),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "7:55",
-                    Modifier.weight(3f).fillMaxHeight(),
+                    SimpleDateFormat("HH:mm", Locale.getDefault()).format(reminder.reminderTime),
+                    Modifier
+                        .weight(3f)
+                        .fillMaxHeight(),
                     textAlign = TextAlign.Center,
                     fontSize = 25.sp
                 )
                 Text(
-                    "Tue, Feb 1, 22",
+                    SimpleDateFormat("EEE, MMM d, yy", Locale.getDefault()).format(reminder.reminderTime),
                     Modifier.weight(2f)
                 )
             }
         }
         Divider(color = Color.Black, thickness = 1.dp)
-    }
-
-    private fun getPlaceholderMessages(): List<Reminder> {
-        var reminderList: MutableList<Reminder> = LinkedList();
-        for (i in 0..10) {
-            reminderList.add(Reminder("This is the placeholder message with the number $i. It exists only for demonstration purposes."))
-        }
-        return reminderList
     }
 }

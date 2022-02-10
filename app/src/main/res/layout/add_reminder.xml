@@ -80,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text="Location X:"/>
                 <EditText
+                    android:id="@+id/locationXEditText"
                     android:layout_marginLeft="20dp"
                     android:layout_width="100dp"
                     android:inputType="numberDecimal"
@@ -99,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:text="Location Y:"/>
                 <EditText
+                    android:id="@+id/locationYEditText"
                     android:layout_marginLeft="20dp"
                     android:layout_width="100dp"
                     android:inputType="numberDecimal"

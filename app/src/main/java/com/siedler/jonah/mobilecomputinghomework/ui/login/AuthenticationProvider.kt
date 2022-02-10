@@ -1,7 +1,7 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.login
 
+import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.user.User
-import com.siedler.jonah.mobilecomputinghomework.db.user.UserDB
 import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
 
@@ -22,11 +22,11 @@ AuthenticationProvider {
     fun addUser(username: String, password: String, firstName: String, lastName: String) {
         val encryptedPassword = encryptionHelper.generateHashedPassword(password)
         val newUser = User(username, encryptedPassword, firstName, lastName)
-        UserDB.getInstance().userDao().insertUser(newUser)
+        AppDB.getInstance().userDao().insertUser(newUser)
     }
 
     fun userExists(username: String): Boolean {
-        return UserDB.getInstance().userDao().getUser(username) != null
+        return AppDB.getInstance().userDao().getUser(username) != null
     }
 
     /**
@@ -37,7 +37,7 @@ AuthenticationProvider {
     }
 
     fun login(username: String, password: String): Boolean {
-        val user = UserDB.getInstance().userDao().getUser(username) ?: return false
+        val user = AppDB.getInstance().userDao().getUser(username) ?: return false
 
         // the given password matches to the password stored in the database
         if (encryptionHelper.equalToHashedPassword(password, user.password)) {
