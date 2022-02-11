@@ -2,6 +2,8 @@ package com.siedler.jonah.mobilecomputinghomework.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
+import android.provider.CalendarContract.Events
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +27,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
@@ -39,6 +43,7 @@ import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.REMINDER_INTENT_EXTRA_KEY
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
@@ -82,6 +87,25 @@ class HomeFragment : Fragment() {
         val addReminderActivity = Intent(context, AddReminderActivity::class.java)
         addReminderActivity.putExtra(REMINDER_INTENT_EXTRA_KEY, reminder.reminderId)
         startActivity(addReminderActivity)
+    }
+
+    private fun addCalendarEntry(reminder: Reminder) {
+        val beginTime = Calendar.getInstance()
+        beginTime.time = reminder.reminderTime
+
+        val intent = Intent(Intent.ACTION_INSERT)
+            .setData(Events.CONTENT_URI)
+            .putExtra(
+                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                beginTime.timeInMillis
+            )
+            .putExtra(
+                CalendarContract.EXTRA_EVENT_END_TIME,
+                beginTime.timeInMillis + (3600000)
+            )
+            .putExtra(Events.TITLE, reminder.message)
+
+        startActivity(intent)
     }
 
     @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
@@ -158,7 +182,9 @@ class HomeFragment : Fragment() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { editReminder(reminder) }
+                    .clickable {
+                        editReminder(reminder)
+                    }
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -168,7 +194,6 @@ class HomeFragment : Fragment() {
                 )
                 Column(
                     Modifier
-                        .alignByBaseline()
                         .height(60.dp)
                         .weight(3f),
                     verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -193,6 +218,14 @@ class HomeFragment : Fragment() {
                         Modifier.weight(2f)
                     )
                 }
+                Icon(
+                    painterResource(id = R.drawable.ic_calendar),
+                    modifier = Modifier
+                        .clickable {
+                            addCalendarEntry(reminder)
+                        },
+                    contentDescription = "Add a new event to the calendar",
+                )
             }
             Divider(color = Color.Black, thickness = 1.dp)
         }
