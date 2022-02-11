@@ -56,6 +56,17 @@
                 android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/reminderDatePicker"/>
 
+            <ImageButton
+                android:id="@+id/textToSpeechButton"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="30dp"
+                android:src="@drawable/ic_microphone"
+                android:background="@color/transparent"
+                app:layout_constraintStart_toStartOf="@id/setMessageTitle"
+                app:layout_constraintTop_toTopOf="@id/setMessageTitle"
+                app:layout_constraintBottom_toBottomOf="@id/setMessageTitle"/>
+
             <EditText
                 android:id="@+id/messageEditText"
                 android:layout_width="match_parent"

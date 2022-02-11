@@ -1,10 +1,11 @@
 package com.siedler.jonah.mobilecomputinghomework.ui.reminder
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.TimePicker
+import android.speech.RecognizerIntent
+import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
@@ -22,8 +23,18 @@ class AddReminderActivity: AppCompatActivity() {
     private lateinit var locationYEditText: EditText
     private lateinit var cancelButton: Button
     private lateinit var saveButton: Button
+    private lateinit var textToSpeechButton: ImageButton
 
     private var reminder: Reminder? = null
+
+    private var textToSpeechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val resultText = result?.get(0)
+            messageEditText.setText(resultText)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +61,20 @@ class AddReminderActivity: AppCompatActivity() {
         saveButton.setOnClickListener {
             saveReminder()
         }
+
+        textToSpeechButton = findViewById(R.id.textToSpeechButton)
+        textToSpeechButton.setOnClickListener {
+            getSpeechInput()
+        }
+    }
+
+    private fun getSpeechInput()
+    {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+
+        textToSpeechResultLauncher.launch(intent)
     }
 
     /**
