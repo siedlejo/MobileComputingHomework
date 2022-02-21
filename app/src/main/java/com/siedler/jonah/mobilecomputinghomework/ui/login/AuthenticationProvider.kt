@@ -29,11 +29,15 @@ AuthenticationProvider {
         return AppDB.getInstance().userDao().getUser(username) != null
     }
 
+    fun isLoggedIn(): Boolean {
+        return getAuthenticatedUser() != null
+    }
+
     /**
      * Returns the user which was authenticated during the login process
      */
-    fun getAuthenticatedUser(): User {
-        return user!!
+    fun getAuthenticatedUser(): User? {
+        return user
     }
 
     fun login(username: String, password: String): Boolean {

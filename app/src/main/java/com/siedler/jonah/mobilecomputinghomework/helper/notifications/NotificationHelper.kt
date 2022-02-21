@@ -3,6 +3,7 @@ package com.siedler.jonah.mobilecomputinghomework.helper.notifications
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -12,8 +13,11 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
 import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment
+import com.siedler.jonah.mobilecomputinghomework.ui.login.LoginActivity
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
@@ -57,6 +61,12 @@ object NotificationHelper {
     fun sendNotification(title: String, content: String) {
         val context: Context = MyApplication.instance
 
+        val resultIntent = Intent(context, MainActivity::class.java)
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(resultIntent)
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+        }
+
         var builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.uni_oulu_logo_black)
             .setColor(context.getColor(R.color.error))
@@ -64,6 +74,8 @@ object NotificationHelper {
             .setContentText(content)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(resultPendingIntent)
+            .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
             notify(notificationIdCounter++, builder.build())

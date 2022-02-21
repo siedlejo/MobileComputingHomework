@@ -108,7 +108,7 @@ class AddReminderActivity: AppCompatActivity() {
             reminder!!.locationX = locationXEditText.text.toString().toDoubleOrNull()
             reminder!!.locationY = locationYEditText.text.toString().toDoubleOrNull()
             reminder!!.creationTime = Date()
-            reminder!!.creatorId = AuthenticationProvider.getAuthenticatedUser().userName
+            reminder!!.creatorId = AuthenticationProvider.getAuthenticatedUser()!!.userName
             reminder!!.reminderSeen = false
             reminder!!.reminderTime = getReminderTime()
             AppDB.getInstance().reminderDao().updateReminder(reminder!!)
@@ -118,7 +118,7 @@ class AddReminderActivity: AppCompatActivity() {
                 locationX = locationXEditText.text.toString().toDoubleOrNull(),
                 locationY = locationYEditText.text.toString().toDoubleOrNull(),
                 creationTime = Date(),
-                creatorId = AuthenticationProvider.getAuthenticatedUser().userName,
+                creatorId = AuthenticationProvider.getAuthenticatedUser()!!.userName,
                 reminderSeen = false,
                 reminderTime = getReminderTime()
             )

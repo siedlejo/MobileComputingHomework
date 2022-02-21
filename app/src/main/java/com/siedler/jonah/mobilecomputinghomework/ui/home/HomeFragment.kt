@@ -74,7 +74,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser().userName))
+        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName))
     }
 
     private fun removeReminderFromDB(reminder: Reminder) {

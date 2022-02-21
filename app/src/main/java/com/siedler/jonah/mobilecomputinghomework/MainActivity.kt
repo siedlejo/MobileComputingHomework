@@ -29,6 +29,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (!AuthenticationProvider.isLoggedIn()) {
+            val loginActivity = Intent(this, LoginActivity::class.java)
+            startActivity(loginActivity)
+            finish()
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -48,7 +54,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
-        val firstName = AuthenticationProvider.getAuthenticatedUser().firstName
+        val firstName = AuthenticationProvider.getAuthenticatedUser()!!.firstName
         initialLetterCircle = binding.navView.getHeaderView(0).findViewById(R.id.initialLetterCircle)
         initialLetterCircle.text = firstName[0].toString().uppercase()
         usernameTextView = binding.navView.getHeaderView(0).findViewById(R.id.usernameTextView)
