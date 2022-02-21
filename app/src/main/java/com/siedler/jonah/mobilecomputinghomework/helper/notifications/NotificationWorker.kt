@@ -18,7 +18,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val title = inputData.getString(NOTIFICATION_TITLE_KEY) ?: ""
         val content = inputData.getString(NOTIFICATION_CONTENT_KEY) ?: ""
 
-        NotificationHelper.sendNotification(id.hashCode(), title, content)
+        NotificationHelper.sendNotification(id, title, content)
         return Result.success()
     }
 }

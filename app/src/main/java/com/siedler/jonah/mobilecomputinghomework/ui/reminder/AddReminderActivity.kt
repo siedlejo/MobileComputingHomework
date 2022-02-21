@@ -84,7 +84,7 @@ class AddReminderActivity: AppCompatActivity() {
      * This means that we edit a reminder instead of creating a new one
      */
     private fun initPassedReminder() {
-        val reminderId = intent.getLongExtra(REMINDER_INTENT_EXTRA_KEY, -1)
+        val reminderId = intent.getStringExtra(REMINDER_INTENT_EXTRA_KEY) ?: ""
         reminder = AppDB.getInstance().reminderDao().getReminder(reminderId)
 
         if (reminder == null) {

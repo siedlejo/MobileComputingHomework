@@ -1,5 +1,7 @@
 package com.siedler.jonah.mobilecomputinghomework.helper.notifications
 
+import android.R.attr.tag
+import android.R.id
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -9,6 +11,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -16,6 +19,7 @@ import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
 import com.siedler.jonah.mobilecomputinghomework.R
 import java.util.concurrent.TimeUnit
+
 
 const val CHANNEL_ID = "MobileComputingHomeworkNotificationChannel"
 const val channelName = "MobileComputing Homework Notifications"
@@ -60,7 +64,13 @@ object NotificationHelper {
         workManager.cancelAllWorkByTag(notificationId)
     }
 
-    fun sendNotification(id: Int, title: String, content: String) {
+    fun removeNotification(reminderId: String) {
+        val context = MyApplication.instance
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+        notificationManager?.cancel(reminderId, reminderId.hashCode())
+    }
+
+    fun sendNotification(id: String, title: String, content: String) {
         val context: Context = MyApplication.instance
 
         val resultIntent = Intent(context, MainActivity::class.java)
@@ -80,7 +90,7 @@ object NotificationHelper {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
-            notify(id, builder.build())
+            notify(id, id.hashCode(), builder.build())
         }
     }
 }

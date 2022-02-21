@@ -83,7 +83,8 @@ class HomeFragment : Fragment() {
         reminderList.postValue(newList)
 
         // cancel the notification of this reminder
-        NotificationHelper.cancelScheduledNotification(reminder.reminderId.toString())
+        NotificationHelper.cancelScheduledNotification(reminder.reminderId)
+        NotificationHelper.removeNotification(reminder.reminderId)
 
         // remove the reminder from the database
         AppDB.getInstance().reminderDao().deleteReminder(reminder)

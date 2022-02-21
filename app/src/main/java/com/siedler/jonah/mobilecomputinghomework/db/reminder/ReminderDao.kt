@@ -15,7 +15,7 @@ interface ReminderDao {
     fun deleteReminder(reminder: Reminder)
 
     @Query("Select * from reminder where reminderId=:reminderId")
-    fun getReminder(reminderId: Long): Reminder?
+    fun getReminder(reminderId: String): Reminder?
 
     @Query("SELECT * from reminder where creatorId=:username")
     fun getAllReminderOfUser(username: String): List<Reminder>
