@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val loginActivity = Intent(this, LoginActivity::class.java)
             startActivity(loginActivity)
             finish()
+            return
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
