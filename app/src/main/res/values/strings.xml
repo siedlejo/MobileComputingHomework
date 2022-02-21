@@ -22,6 +22,7 @@
     <string name="edit_reminder_view_title">Edit Reminder</string>
     <string name="set_reminder_date">Set the reminder date</string>
     <string name="set_reminder_message">Message</string>
+    <string name="tap_to_open_in_app">Tap to open the reminder in the app</string>
 
     <string name="user_signup_view_title">User Signup</string>
     <string name="first_name">First name</string>

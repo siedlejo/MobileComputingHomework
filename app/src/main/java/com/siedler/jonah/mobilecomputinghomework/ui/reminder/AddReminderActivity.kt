@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 const val REMINDER_INTENT_EXTRA_KEY: String = "REMINDER_INTENT_EXTRA"
 
@@ -111,7 +113,7 @@ class AddReminderActivity: AppCompatActivity() {
             reminder!!.reminderTime = getReminderTime()
             AppDB.getInstance().reminderDao().updateReminder(reminder!!)
         } else {
-            val newReminder = Reminder(
+            reminder = Reminder(
                 message = messageEditText.text.toString(),
                 locationX = locationXEditText.text.toString().toDoubleOrNull(),
                 locationY = locationYEditText.text.toString().toDoubleOrNull(),
@@ -120,10 +122,18 @@ class AddReminderActivity: AppCompatActivity() {
                 reminderSeen = false,
                 reminderTime = getReminderTime()
             )
-            AppDB.getInstance().reminderDao().insertReminder(newReminder)
+            AppDB.getInstance().reminderDao().insertReminder(reminder!!)
         }
 
+        scheduleReminderNotification(reminder!!)
         finish()
+    }
+
+    private fun scheduleReminderNotification(reminder: Reminder) {
+        val time = reminder.reminderTime.time - Date().time
+        val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
+
+        NotificationHelper.scheduleNotification(timeInSeconds, reminder.message, getString(R.string.tap_to_open_in_app))
     }
 
     private fun getReminderTime(): Date {
