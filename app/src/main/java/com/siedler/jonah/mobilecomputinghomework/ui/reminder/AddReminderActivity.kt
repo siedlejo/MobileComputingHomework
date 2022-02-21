@@ -133,7 +133,7 @@ class AddReminderActivity: AppCompatActivity() {
         val time = reminder.reminderTime.time - Date().time
         val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
 
-        NotificationHelper.scheduleNotification(timeInSeconds, reminder.message, getString(R.string.tap_to_open_in_app))
+        NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
     }
 
     private fun getReminderTime(): Date {

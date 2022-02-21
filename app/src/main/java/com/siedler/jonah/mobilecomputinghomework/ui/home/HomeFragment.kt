@@ -43,7 +43,6 @@ import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.REMINDER_INTENT_EXTRA_KEY
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 class HomeFragment : Fragment() {
@@ -77,10 +76,16 @@ class HomeFragment : Fragment() {
         reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName))
     }
 
-    private fun removeReminderFromDB(reminder: Reminder) {
+    private fun removeReminder(reminder: Reminder) {
+        // remove the list item
         val newList = reminderList.value?.toMutableList() ?: emptyList<Reminder>().toMutableList()
         newList.remove(reminder)
         reminderList.postValue(newList)
+
+        // cancel the notification of this reminder
+        NotificationHelper.cancelScheduledNotification(reminder.reminderId.toString())
+
+        // remove the reminder from the database
         AppDB.getInstance().reminderDao().deleteReminder(reminder)
     }
 
@@ -120,7 +125,7 @@ class HomeFragment : Fragment() {
                 val dismissState = rememberDismissState()
 
                 if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-                    removeReminderFromDB(reminder)
+                    removeReminder(reminder)
                 }
 
                 SwipeToDismiss(

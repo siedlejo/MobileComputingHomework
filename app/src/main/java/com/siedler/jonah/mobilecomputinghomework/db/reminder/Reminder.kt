@@ -17,8 +17,8 @@ import java.util.*
     )]
 )
 data class Reminder(
-    @PrimaryKey(autoGenerate = true)
-    val reminderId: Long = 0,
+    @PrimaryKey
+    val reminderId: String = UUID.randomUUID().toString(),
     var message: String,
     var locationX: Double?,
     var locationY: Double?,

@@ -12,13 +12,9 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
 import com.siedler.jonah.mobilecomputinghomework.R
-import com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment
-import com.siedler.jonah.mobilecomputinghomework.ui.login.LoginActivity
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 const val CHANNEL_ID = "MobileComputingHomeworkNotificationChannel"
@@ -26,7 +22,6 @@ const val channelName = "MobileComputing Homework Notifications"
 const val channelDescription = "This is the general channel for notifications of the app MobileComputing Homework"
 
 object NotificationHelper {
-    var notificationIdCounter: Int = 0
     init {
         // create a notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -43,22 +38,29 @@ object NotificationHelper {
         }
     }
 
-    fun scheduleNotification(inSeconds: Long, notificationTitle: String, notificationContent: String) {
+    fun scheduleNotification(inSeconds: Long, notificationId: String, notificationTitle: String, notificationContent: String) {
         val workManager = WorkManager.getInstance(MyApplication.instance)
 
         val workingJobBuilder = OneTimeWorkRequestBuilder<NotificationWorker>()
 
         val data = Data.Builder()
+        data.putString(NOTIFICATION_ID_KEY, notificationId)
         data.putString(NOTIFICATION_TITLE_KEY, notificationTitle)
         data.putString(NOTIFICATION_CONTENT_KEY, notificationContent)
 
         val workingJob = workingJobBuilder.setInitialDelay(inSeconds, TimeUnit.SECONDS)
             .setInputData(data.build())
+            .addTag(notificationId)
             .build()
         workManager.beginWith(workingJob).enqueue()
     }
 
-    fun sendNotification(title: String, content: String) {
+    fun cancelScheduledNotification(notificationId: String) {
+        val workManager = WorkManager.getInstance(MyApplication.instance)
+        workManager.cancelAllWorkByTag(notificationId)
+    }
+
+    fun sendNotification(id: Int, title: String, content: String) {
         val context: Context = MyApplication.instance
 
         val resultIntent = Intent(context, MainActivity::class.java)
@@ -78,7 +80,7 @@ object NotificationHelper {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
-            notify(notificationIdCounter++, builder.build())
+            notify(id, builder.build())
         }
     }
 }
