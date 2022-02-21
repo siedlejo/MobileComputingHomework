@@ -4,6 +4,7 @@ import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.user.User
 import com.siedler.jonah.mobilecomputinghomework.helper.EncryptionHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
+import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 
 // A singleton to handle the authentication
 object
@@ -86,5 +87,7 @@ AuthenticationProvider {
         this.user = null
         preferenceHelper.deleteUserName()
         preferenceHelper.deleteUserPassword()
+        NotificationHelper.cancelAllScheduledNotifications()
+        NotificationHelper.removeAllNotifications()
     }
 }

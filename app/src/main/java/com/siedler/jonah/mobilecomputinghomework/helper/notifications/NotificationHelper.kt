@@ -64,6 +64,17 @@ object NotificationHelper {
         workManager.cancelAllWorkByTag(notificationId)
     }
 
+    fun cancelAllScheduledNotifications() {
+        val workManager = WorkManager.getInstance(MyApplication.instance)
+        workManager.cancelAllWork()
+    }
+
+    fun removeAllNotifications() {
+        val context = MyApplication.instance
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
+        notificationManager?.cancelAll()
+    }
+
     fun removeNotification(reminderId: String) {
         val context = MyApplication.instance
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
