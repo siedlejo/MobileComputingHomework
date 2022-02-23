@@ -43,8 +43,16 @@ object NotificationHelper {
     }
 
     fun scheduleNotification(inSeconds: Long, notificationId: String, notificationTitle: String, notificationContent: String) {
+        if (inSeconds < 0) {
+            return
+        }
+
         val workManager = WorkManager.getInstance(MyApplication.instance)
 
+        // cancel all existing notifications for this reminder
+        cancelScheduledNotification(notificationId)
+
+        // start a new working job to schedule the notification
         val workingJobBuilder = OneTimeWorkRequestBuilder<NotificationWorker>()
 
         val data = Data.Builder()

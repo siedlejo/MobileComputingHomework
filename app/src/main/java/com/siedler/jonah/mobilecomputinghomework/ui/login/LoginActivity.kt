@@ -18,7 +18,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.db.AppDB
+import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.usersignup.UserSignupActivity
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var usernameTextField: TextView
@@ -84,9 +89,24 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginSuccessful() {
+        scheduleNotifications()
+
+        // navigate to the main activity
         val mainActivity = Intent(this, MainActivity::class.java)
         startActivity(mainActivity)
         finish()
+    }
+
+    private fun scheduleNotifications() {
+        val username = AuthenticationProvider.getAuthenticatedUser()?.userName ?: ""
+
+        val reminders = AppDB.getInstance().reminderDao().getAllReminderOfUser(username)
+        for (reminder: Reminder in reminders) {
+            val time = reminder.reminderTime.time - Date().time
+            val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
+
+            NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+        }
     }
 
     private fun loginFailed() {
