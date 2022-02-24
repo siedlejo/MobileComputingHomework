@@ -52,12 +52,15 @@ class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
     private lateinit var fab: FloatingActionButton
 
-    private val reminderList = MutableLiveData<List<Reminder>>()
+    private var reminderList: List<Reminder> by Delegates.observable(ArrayList<Reminder>()) { _, _, new ->
+        updateFilteredReminderList(new)
+    }
+    private val filteredReminderList = MutableLiveData<List<Reminder>>()
     private var sortingMode: SortingMode by Delegates.observable(SortingMode.REMINDER_TIME) { _, _, _ ->
-        updateReminderList(this.reminderList.value ?: emptyList())
+        updateFilteredReminderList(this.reminderList)
     }
     private var showAllReminders: Boolean by Delegates.observable(false) { _, _, _ ->
-        updateReminderList(this.reminderList.value ?: emptyList())
+        updateFilteredReminderList(this.reminderList)
     }
 
     override fun onCreateView(
@@ -109,13 +112,13 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        updateReminderList(getReminderListFromDB())
+        this.reminderList = getReminderListFromDB()
     }
 
-    private fun updateReminderList(newReminderList: List<Reminder>) {
+    private fun updateFilteredReminderList(newReminderList: List<Reminder>) {
         val filteredList = applyFilter(newReminderList)
         val sortedList = applySortingMode(filteredList)
-        reminderList.postValue(sortedList)
+        filteredReminderList.postValue(sortedList)
     }
 
     private fun getReminderListFromDB(): List<Reminder> {
@@ -134,21 +137,19 @@ class HomeFragment : Fragment() {
     }
 
     private fun applyFilter(reminderList: List<Reminder>): List<Reminder> {
-        var originalList = getReminderListFromDB()
-
         return if (showAllReminders) {
-            originalList
+            reminderList
         } else {
-            originalList.filter { it.reminderTime.time - Date().time < 0 }
+            reminderList.filter { !it.reminderSeen && it.reminderTime.time - Date().time < 0 }
         }
     }
 
 
     private fun removeReminder(reminder: Reminder) {
         // remove the list item
-        val newList = reminderList.value?.toMutableList() ?: emptyList<Reminder>().toMutableList()
+        val newList = reminderList.toMutableList()
         newList.remove(reminder)
-        updateReminderList(newList)
+        this.reminderList = newList
 
         // cancel the notification of this reminder
         NotificationHelper.cancelScheduledNotification(reminder.reminderId)
@@ -162,6 +163,21 @@ class HomeFragment : Fragment() {
         val addReminderActivity = Intent(context, AddReminderActivity::class.java)
         addReminderActivity.putExtra(REMINDER_INTENT_EXTRA_KEY, reminder.reminderId)
         startActivity(addReminderActivity)
+    }
+
+    private fun markAsSeen(reminder: Reminder) {
+        reminder.reminderSeen = true
+
+        // update the list
+        val newList = reminderList.toMutableList()
+        val reminderIndex = reminderList.withIndex()
+            .first { it.value.reminderId == reminder.reminderId }
+            .index
+        newList[reminderIndex] = reminder
+        this.reminderList = reminderList
+
+        // update the db
+        AppDB.getInstance().reminderDao().updateReminder(reminder)
     }
 
     private fun addCalendarEntry(reminder: Reminder) {
@@ -186,7 +202,7 @@ class HomeFragment : Fragment() {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
     @Composable
     fun ReminderList() {
-        val items: List<Reminder>? by reminderList.observeAsState()
+        val items: List<Reminder>? by filteredReminderList.observeAsState()
 
         LazyColumn(
         ) {
@@ -294,10 +310,14 @@ class HomeFragment : Fragment() {
                     )
                 }
                 Icon(
-                    painterResource(id = R.drawable.ic_calendar),
+                    painterResource(id = if (showAllReminders) R.drawable.ic_calendar else R.drawable.ic_seen),
                     modifier = Modifier
                         .clickable {
-                            addCalendarEntry(reminder)
+                            if (showAllReminders) {
+                                addCalendarEntry(reminder)
+                            } else {
+                                markAsSeen(reminder)
+                            }
                         },
                     contentDescription = "Add a new event to the calendar",
                 )
