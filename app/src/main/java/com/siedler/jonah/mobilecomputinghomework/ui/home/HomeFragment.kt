@@ -174,7 +174,7 @@ class HomeFragment : Fragment() {
             .first { it.value.reminderId == reminder.reminderId }
             .index
         newList[reminderIndex] = reminder
-        this.reminderList = reminderList
+        this.reminderList = newList
 
         // update the db
         AppDB.getInstance().reminderDao().updateReminder(reminder)
