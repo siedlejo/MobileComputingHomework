@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -32,6 +30,7 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
@@ -43,13 +42,23 @@ import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.REMINDER_INTENT_EXTRA_KEY
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
+enum class SortingMode {
+    ALPHABETICALLY, CREATION_TIME, REMINDER_TIME
+}
 
 class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
     private lateinit var fab: FloatingActionButton
 
     private val reminderList = MutableLiveData<List<Reminder>>()
+    private var sortingMode: SortingMode by Delegates.observable(SortingMode.REMINDER_TIME) { _, _, _ ->
+        updateReminderList(this.reminderList.value ?: emptyList())
+    }
+    private var showAllReminders: Boolean by Delegates.observable(false) { _, _, _ ->
+        updateReminderList(this.reminderList.value ?: emptyList())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +66,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val layout =  inflater.inflate(R.layout.fragment_home, container, false)
+        setHasOptionsMenu(true)
 
         listViewComposable = layout.findViewById(R.id.listViewComposable)
         listViewComposable.setContent { ReminderList() }
@@ -70,17 +80,75 @@ class HomeFragment : Fragment() {
         return layout
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.reminder_list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.show_all_reminders -> {
+                this.showAllReminders = !this.showAllReminders
+                true
+            }
+            R.id.sortAlphabetically -> {
+                this.sortingMode = SortingMode.ALPHABETICALLY
+                true
+            }
+            R.id.sortByCreationTime -> {
+                this.sortingMode = SortingMode.CREATION_TIME
+                true
+            }
+            R.id.sortByReminderTime -> {
+                this.sortingMode = SortingMode.REMINDER_TIME
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
-        reminderList.postValue(AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName))
+        updateReminderList(getReminderListFromDB())
     }
+
+    private fun updateReminderList(newReminderList: List<Reminder>) {
+        val filteredList = applyFilter(newReminderList)
+        val sortedList = applySortingMode(filteredList)
+        reminderList.postValue(sortedList)
+    }
+
+    private fun getReminderListFromDB(): List<Reminder> {
+        return AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName)
+    }
+
+    private fun applySortingMode(reminderList: List<Reminder>): List<Reminder> {
+        return when(this.sortingMode) {
+            SortingMode.ALPHABETICALLY ->
+                reminderList.sortedBy { it.message }
+            SortingMode.CREATION_TIME ->
+                reminderList.sortedBy { it.creationTime }
+            SortingMode.REMINDER_TIME ->
+                reminderList.sortedBy { it.reminderTime }
+        }
+    }
+
+    private fun applyFilter(reminderList: List<Reminder>): List<Reminder> {
+        var originalList = getReminderListFromDB()
+
+        return if (showAllReminders) {
+            originalList
+        } else {
+            originalList.filter { it.reminderTime.time - Date().time < 0 }
+        }
+    }
+
 
     private fun removeReminder(reminder: Reminder) {
         // remove the list item
         val newList = reminderList.value?.toMutableList() ?: emptyList<Reminder>().toMutableList()
         newList.remove(reminder)
-        reminderList.postValue(newList)
+        updateReminderList(newList)
 
         // cancel the notification of this reminder
         NotificationHelper.cancelScheduledNotification(reminder.reminderId)

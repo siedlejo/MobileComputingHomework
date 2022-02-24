@@ -17,6 +17,9 @@
     <string name="logout">Logout</string>
 
     <string name="menu_home">Home</string>
+    <string name="sort_alphabetically">Alphabetically</string>
+    <string name="sort_by_creation_time">Creation time</string>
+    <string name="sort_by_reminder_time">Reminder time</string>
 
     <string name="add_reminder_view_title">Add Reminder</string>
     <string name="edit_reminder_view_title">Edit Reminder</string>

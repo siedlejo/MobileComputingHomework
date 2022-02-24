@@ -1,0 +1,26 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/show_all_reminders"
+        android:icon="@drawable/ic_filter"
+        android:title="filter"
+        app:showAsAction="always"/>
+    <item
+        android:title="sort"
+        android:icon="@drawable/ic_sort"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/sortAlphabetically"
+                android:title="@string/sort_alphabetically" />
+            <item
+                android:id="@+id/sortByCreationTime"
+                android:title="@string/sort_by_creation_time" />
+            <item
+                android:id="@+id/sortByReminderTime"
+                android:title="@string/sort_by_reminder_time" />
+        </menu>
+    </item>
+</menu>
