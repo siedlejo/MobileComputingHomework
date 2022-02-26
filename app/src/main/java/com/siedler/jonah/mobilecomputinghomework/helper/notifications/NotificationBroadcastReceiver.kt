@@ -31,6 +31,7 @@ class NotificationBroadcastReceiver: BroadcastReceiver() {
             it.reminderSeen = true
             AppDB.getInstance().reminderDao().updateReminder(reminder)
             dismissNotification(reminderId)
+            // trigger an update to the home fragment in case it is running to automatically update the list
             HomeFragment.Instance?.getReminderListFromDB()
         }
     }

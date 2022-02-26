@@ -14,6 +14,7 @@ import androidx.work.WorkManager
 import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.MyApplication
 import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment
 import java.util.concurrent.TimeUnit
 
 
@@ -47,6 +48,7 @@ object NotificationHelper {
 
         // cancel all existing notifications for this reminder
         cancelScheduledNotification(notificationId)
+        removeNotification(notificationId)
 
         // start a new working job to schedule the notification
         val workingJobBuilder = OneTimeWorkRequestBuilder<NotificationWorker>()
