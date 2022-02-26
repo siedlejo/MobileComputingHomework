@@ -1,17 +1,13 @@
 package com.siedler.jonah.mobilecomputinghomework.helper.notifications
 
-import android.R.attr.tag
-import android.R.id
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -95,8 +91,18 @@ object NotificationHelper {
         val resultIntent = Intent(context, MainActivity::class.java)
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(resultIntent)
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+            getPendingIntent(id.hashCode(), PendingIntent.FLAG_IMMUTABLE)
         }
+
+        val markAsSeenIntent = Intent(context, NotificationBroadcastReceiver::class.java)
+        markAsSeenIntent.action = MARK_AS_SEEN_ACTION
+        markAsSeenIntent.putExtra(NOTIFICATION_ID_MARK_AS_SEEN_ACTION, id)
+        val markAsSeenAction = PendingIntent.getBroadcast(context, (id + MARK_AS_SEEN_ACTION).hashCode(), markAsSeenIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        val dismissNotificationIntent = Intent(context, NotificationBroadcastReceiver::class.java)
+        dismissNotificationIntent.action = DISMISS_ACTION
+        dismissNotificationIntent.putExtra(NOTIFICATION_ID_DISMISS_ACTION, id)
+        val dismissNotificationAction = PendingIntent.getBroadcast(context, (id + DISMISS_ACTION).hashCode(), dismissNotificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
         var builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.uni_oulu_logo_black)
@@ -107,6 +113,8 @@ object NotificationHelper {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(resultPendingIntent)
             .setAutoCancel(true)
+            .addAction(R.drawable.ic_delete, context.getString(R.string.dismiss), dismissNotificationAction)
+            .addAction(R.drawable.ic_seen, context.getString(R.string.mark_as_seen), markAsSeenAction)
 
         with(NotificationManagerCompat.from(context)) {
             notify(id, id.hashCode(), builder.build())

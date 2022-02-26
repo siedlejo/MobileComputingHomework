@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
@@ -44,11 +44,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
 
+
 enum class SortingMode {
     ALPHABETICALLY, CREATION_TIME, REMINDER_TIME
 }
 
 class HomeFragment : Fragment() {
+    companion object {
+        var Instance: HomeFragment? = null
+    }
+
     private lateinit var listViewComposable: ComposeView
     private lateinit var fab: FloatingActionButton
 
@@ -79,6 +84,8 @@ class HomeFragment : Fragment() {
             val addReminderActivity = Intent(context, AddReminderActivity::class.java)
             startActivity(addReminderActivity)
         }
+
+        Instance = this
 
         return layout
     }
@@ -112,7 +119,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        this.reminderList = getReminderListFromDB()
+        getReminderListFromDB()
     }
 
     private fun updateFilteredReminderList(newReminderList: List<Reminder>) {
@@ -121,8 +128,8 @@ class HomeFragment : Fragment() {
         filteredReminderList.postValue(sortedList)
     }
 
-    private fun getReminderListFromDB(): List<Reminder> {
-        return AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName)
+    fun getReminderListFromDB() {
+        this.reminderList =  AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName)
     }
 
     private fun applySortingMode(reminderList: List<Reminder>): List<Reminder> {
