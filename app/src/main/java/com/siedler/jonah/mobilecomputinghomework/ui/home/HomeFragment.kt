@@ -59,11 +59,15 @@ class HomeFragment : Fragment() {
     private var reminderList: List<Reminder> by Delegates.observable(ArrayList<Reminder>()) { _, _, new ->
         updateSortedReminderList(new)
     }
-    private val sortedReminderList = MutableLiveData<List<Reminder>>()
+    private val displayedReminderList = MutableLiveData<List<Reminder>>()
     private var sortingMode: SortingMode by Delegates.observable(SortingMode.REMINDER_TIME) { _, _, _ ->
         updateSortedReminderList(this.reminderList)
     }
-    private val showAllReminders : MutableLiveData<Boolean> =  MutableLiveData<Boolean>(false)
+    private var showAllReminders: Boolean by Delegates.observable(false) { _, _, new ->
+        updateSortedReminderList(this.reminderList)
+        overviewMode.postValue(new)
+    }
+    private val overviewMode : MutableLiveData<Boolean> =  MutableLiveData<Boolean>(false)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,7 +98,7 @@ class HomeFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.show_all_reminders -> {
-                this.showAllReminders.postValue(!this.showAllReminders.value!!)
+                this.showAllReminders = !this.showAllReminders
                 true
             }
             R.id.sortAlphabetically -> {
@@ -121,7 +125,8 @@ class HomeFragment : Fragment() {
 
     private fun updateSortedReminderList(newReminderList: List<Reminder>) {
         val sortedList = applySortingMode(newReminderList)
-        sortedReminderList.postValue(sortedList)
+        val filteredList = applyFilter(sortedList)
+        displayedReminderList.postValue(filteredList)
     }
 
     fun getReminderListFromDB() {
@@ -139,8 +144,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun applyFilter(reminderList: List<Reminder>, showAllReminders: Boolean): List<Reminder> {
-        return if (showAllReminders) {
+    private fun applyFilter(reminderList: List<Reminder>): List<Reminder> {
+        return if (this.showAllReminders) {
             reminderList
         } else {
             reminderList.filter { !it.reminderSeen && it.reminderTime.time - Date().time < 0 }
@@ -205,13 +210,11 @@ class HomeFragment : Fragment() {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalUnitApi::class)
     @Composable
     fun ReminderList() {
-        val items: List<Reminder>? by sortedReminderList.observeAsState()
-        val showAll: Boolean by showAllReminders.observeAsState(initial = false)
-        val filteredList = applyFilter(items?: emptyList(), showAll)
+        val items: List<Reminder>? by displayedReminderList.observeAsState()
 
         LazyColumn(
         ) {
-            items(filteredList, key = {item: Reminder -> item.reminderId }){ reminder ->
+            items(items?: emptyList(), key = {item: Reminder -> item.reminderId }){ reminder ->
                 val dismissState = rememberDismissState()
 
                 if (dismissState.isDismissed(DismissDirection.EndToStart)) {
@@ -259,7 +262,7 @@ class HomeFragment : Fragment() {
                                 horizontalArrangement = Arrangement.Center
                             ) {
 
-                                ReminderRow(reminder, showAll)
+                                ReminderRow(reminder)
                             }
                         }
                     }
@@ -272,7 +275,9 @@ class HomeFragment : Fragment() {
     }
 
     @Composable
-    fun ReminderRow(reminder: Reminder, showAll: Boolean) {
+    fun ReminderRow(reminder: Reminder) {
+        var overviewMode = overviewMode.observeAsState(initial = false)
+
         Column() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -315,10 +320,10 @@ class HomeFragment : Fragment() {
                     )
                 }
                 Icon(
-                    painterResource(id = if (showAll) R.drawable.ic_calendar else R.drawable.ic_seen),
+                    painterResource(id = if (overviewMode.value) R.drawable.ic_calendar else R.drawable.ic_seen),
                     modifier = Modifier
                         .clickable {
-                            if (showAll) {
+                            if (overviewMode.value) {
                                 addCalendarEntry(reminder)
                             } else {
                                 markAsSeen(reminder)
