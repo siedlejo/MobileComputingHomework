@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -74,6 +75,9 @@ class HomeFragment : Fragment() {
     // this variable is used for one specific column to set observe as state and set the icon appropriately
     // it is set by the filter flag and does need to be set by itself
     private val overviewMode : MutableLiveData<Boolean> =  MutableLiveData<Boolean>(false)
+    private var searchString: String by Delegates.observable("") { _, _, _ ->
+        updateSortedReminderList(this.reminderList)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,11 +103,25 @@ class HomeFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.reminder_list_menu, menu)
+
+        val searchViewMenuItem = menu.findItem(R.id.reminderSearchView)
+        val searchView = searchViewMenuItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchViewMenuItem.collapseActionView()
+                return false
+            }
+
+            override fun onQueryTextChange(text: String): Boolean {
+                searchString = text
+                return false
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.show_all_reminders -> {
+            R.id.showAllReminders -> {
                 this.showAllReminders = !this.showAllReminders
                 true
             }
@@ -132,11 +150,20 @@ class HomeFragment : Fragment() {
     private fun updateSortedReminderList(newReminderList: List<Reminder>) {
         val sortedList = applySortingMode(newReminderList)
         val filteredList = applyFilter(sortedList)
-        displayedReminderList.postValue(filteredList)
+        var listIncludingSearchFilter = applySearch(filteredList)
+        displayedReminderList.postValue(listIncludingSearchFilter)
     }
 
     fun getReminderListFromDB() {
         this.reminderList =  AppDB.getInstance().reminderDao().getAllReminderOfUser(AuthenticationProvider.getAuthenticatedUser()!!.userName)
+    }
+
+    private fun applySearch(reminderList: List<Reminder>) : List<Reminder> {
+        if (this.searchString.isEmpty()) {
+            return reminderList
+        }
+
+        return reminderList.filter { it.message.contains(this.searchString) }
     }
 
     private fun applySortingMode(reminderList: List<Reminder>): List<Reminder> {
