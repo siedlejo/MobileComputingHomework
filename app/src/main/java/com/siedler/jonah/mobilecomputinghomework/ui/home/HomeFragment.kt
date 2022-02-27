@@ -56,17 +56,23 @@ class HomeFragment : Fragment() {
     private lateinit var listViewComposable: ComposeView
     private lateinit var fab: FloatingActionButton
 
+    // the list including all reminders
     private var reminderList: List<Reminder> by Delegates.observable(ArrayList<Reminder>()) { _, _, new ->
         updateSortedReminderList(new)
     }
+    // the filtered and sorted list which is displayed
     private val displayedReminderList = MutableLiveData<List<Reminder>>()
+    // the sorting mode can be set by simply changing the value of this variable
     private var sortingMode: SortingMode by Delegates.observable(SortingMode.REMINDER_TIME) { _, _, _ ->
         updateSortedReminderList(this.reminderList)
     }
+    // this flag represents the filter mode, it automatically updates the overviewMode flag
     private var showAllReminders: Boolean by Delegates.observable(false) { _, _, new ->
         updateSortedReminderList(this.reminderList)
         overviewMode.postValue(new)
     }
+    // this variable is used for one specific column to set observe as state and set the icon appropriately
+    // it is set by the filter flag and does need to be set by itself
     private val overviewMode : MutableLiveData<Boolean> =  MutableLiveData<Boolean>(false)
 
     override fun onCreateView(
