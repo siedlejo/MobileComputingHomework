@@ -22,7 +22,7 @@ data class Reminder(
     var message: String,
     var locationX: Double?,
     var locationY: Double?,
-    var reminderTime: Date,
+    var reminderTime: Date?,
     var creationTime: Date,
     var creatorId: String,
     var reminderSeen: Boolean

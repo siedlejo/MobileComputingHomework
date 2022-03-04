@@ -181,8 +181,20 @@ class HomeFragment : Fragment() {
         return if (this.showAllReminders) {
             reminderList
         } else {
-            reminderList.filter { !it.reminderSeen && it.reminderTime.time - Date().time < 0 }
+            reminderList.filter { reminderIsDue(it) }
         }
+    }
+
+    private fun reminderIsDue(reminder: Reminder): Boolean {
+        val timingRequirement = if (reminder.reminderTime != null) {
+            reminder.reminderTime!!.time - Date().time < 0
+        } else {
+            false
+        }
+
+        val locationRequirement = false //TODO
+
+        return !reminder.reminderSeen && (timingRequirement || locationRequirement)
     }
 
 
@@ -316,6 +328,7 @@ class HomeFragment : Fragment() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(80.dp)
                     .clickable {
                         editReminder(reminder)
                     }
@@ -326,31 +339,42 @@ class HomeFragment : Fragment() {
                     reminder.message,
                     Modifier.weight(6f)
                 )
-                Column(
-                    Modifier
-                        .height(60.dp)
-                        .weight(3f),
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        SimpleDateFormat(
-                            "HH:mm",
-                            Locale.getDefault()
-                        ).format(reminder.reminderTime),
+                if (reminder.locationX != null && reminder.locationY != null) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_near_me),
+                        modifier = Modifier
+                            .clickable {
+
+                            },
+                        contentDescription = "This reminder contains a location",
+                    )
+                }
+                if (reminder.reminderTime != null) {
+                    Column(
                         Modifier
-                            .weight(3f)
-                            .fillMaxHeight(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 25.sp
-                    )
-                    Text(
-                        SimpleDateFormat(
-                            "EEE, MMM d, yy",
-                            Locale.getDefault()
-                        ).format(reminder.reminderTime),
-                        Modifier.weight(2f)
-                    )
+                            .weight(3f),
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            SimpleDateFormat(
+                                "HH:mm",
+                                Locale.getDefault()
+                            ).format(reminder.reminderTime),
+                            Modifier
+                                .weight(3f)
+                                .fillMaxHeight(),
+                            textAlign = TextAlign.Center,
+                            fontSize = 25.sp
+                        )
+                        Text(
+                            SimpleDateFormat(
+                                "EEE, MMM d, yy",
+                                Locale.getDefault()
+                            ).format(reminder.reminderTime),
+                            Modifier.weight(2f)
+                        )
+                    }
                 }
                 Icon(
                     painterResource(id = if (overviewMode.value) R.drawable.ic_calendar else R.drawable.ic_seen),

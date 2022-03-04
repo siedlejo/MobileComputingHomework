@@ -10,16 +10,20 @@ object DateConverter {
     var df: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss'Z'", Locale.getDefault())
 
     @TypeConverter
-    fun timeToDate(value: String): Date? {
+    fun timeToDate(value: String?): Date? {
         return try {
-            df.parse(value)
+            df.parse(value ?: "")
         } catch (e: ParseException) {
             null
         }
     }
 
     @TypeConverter
-    fun dateToTime(value: Date): String? {
-        return df.format(value)
+    fun dateToTime(value: Date?): String? {
+        return if (value == null) {
+            null
+        } else {
+            df.format(value)
+        }
     }
 }

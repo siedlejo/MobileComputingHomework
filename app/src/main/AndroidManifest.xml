@@ -40,6 +40,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity android:name=".ui.reminder.SelectLocationActivity"
+            android:label="@string/select_location_view_title"/>
         <receiver android:name = ".helper.notifications.NotificationBroadcastReceiver" />
     </application>
 

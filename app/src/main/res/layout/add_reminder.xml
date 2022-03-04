@@ -16,106 +16,179 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TimePicker
-                android:id="@+id/reminderTimePicker"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/messageArea"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:timePickerMode="clock"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:paddingVertical="20dp"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/setDateTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_reminder_date"
-                android:textSize="25sp"
-                android:textAlignment="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reminderTimePicker"/>
+                <TextView
+                    android:id="@+id/setMessageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_reminder_message"
+                    android:textSize="25sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-            <DatePicker
-                android:id="@+id/reminderDatePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setDateTitle" />
+                <ImageButton
+                    android:id="@+id/textToSpeechButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/ic_microphone"
+                    android:background="@color/transparent"
+                    app:layout_constraintStart_toStartOf="@id/setMessageTitle"
+                    app:layout_constraintTop_toTopOf="@id/setMessageTitle"
+                    app:layout_constraintBottom_toBottomOf="@id/setMessageTitle"/>
 
-            <TextView
-                android:id="@+id/setMessageTitle"
+                <EditText
+                    android:id="@+id/messageEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:ems="10"
+                    android:hint="Enter reminder information here"
+                    android:minHeight="48dp"
+                    app:layout_constraintTop_toBottomOf="@id/setMessageTitle"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/timeArea"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_reminder_message"
-                android:textSize="25sp"
-                android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@id/reminderDatePicker"/>
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/messageArea">
+
+                <TimePicker
+                    android:id="@+id/reminderTimePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:timePickerMode="clock"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/setDateTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_reminder_date"
+                    android:textSize="25sp"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@id/reminderTimePicker"/>
+
+                <DatePicker
+                    android:id="@+id/reminderDatePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:datePickerMode="spinner"
+                    android:calendarViewShown="false"
+                    app:layout_constraintTop_toBottomOf="@id/setDateTitle"/>
+
+                <ImageButton
+                    android:id="@+id/removeTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_remove_time"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/transparent"
+                    android:layout_margin="30dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageButton
-                android:id="@+id/textToSpeechButton"
+                android:id="@+id/addTimeButton"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginLeft="30dp"
-                android:src="@drawable/ic_microphone"
-                android:background="@color/transparent"
-                app:layout_constraintStart_toStartOf="@id/setMessageTitle"
-                app:layout_constraintTop_toTopOf="@id/setMessageTitle"
-                app:layout_constraintBottom_toBottomOf="@id/setMessageTitle"/>
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_add_time"
+                app:layout_constraintStart_toStartOf="@id/locationArea"
+                app:layout_constraintTop_toBottomOf="@id/timeArea"/>
 
-            <EditText
-                android:id="@+id/messageEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="10dp"
-                android:ems="10"
-                android:hint="Enter reminder information here"
-                android:minHeight="48dp"
-                app:layout_constraintTop_toBottomOf="@id/setMessageTitle"/>
+            <ImageButton
+                android:id="@+id/addLocationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_add_location"
+                app:layout_constraintStart_toEndOf="@id/addTimeButton"
+                app:layout_constraintTop_toTopOf="@id/addTimeButton"/>
 
             <LinearLayout
-                android:id="@+id/locationXArea"
-                android:layout_marginTop="20dp"
-                android:layout_marginHorizontal="20dp"
+                android:id="@+id/locationArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/messageEditText">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Location X:"/>
-                <EditText
-                    android:id="@+id/locationXEditText"
-                    android:layout_marginLeft="20dp"
-                    android:layout_width="100dp"
-                    android:inputType="numberDecimal"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/locationYArea"
-                android:layout_marginTop="20dp"
+                android:paddingBottom="20dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/locationXArea">
-                <TextView
+                android:layout_marginVertical="20dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/addTimeButton">
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Location Y:"/>
-                <EditText
-                    android:id="@+id/locationYEditText"
-                    android:layout_marginLeft="20dp"
-                    android:layout_width="100dp"
-                    android:inputType="numberDecimal"
-                    android:layout_height="wrap_content"/>
+                    android:orientation="vertical"
+                    android:layout_weight="5">
+
+                    <LinearLayout
+                        android:id="@+id/locationXArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/messageEditText">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Location X:"/>
+                        <EditText
+                            android:id="@+id/locationXEditText"
+                            android:layout_marginLeft="20dp"
+                            android:layout_width="100dp"
+                            android:inputType="numberDecimal"
+                            android:enabled="false"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/locationYArea"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintTop_toBottomOf="@id/locationXArea">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Location Y:"/>
+                        <EditText
+                            android:id="@+id/locationYEditText"
+                            android:layout_marginLeft="20dp"
+                            android:layout_width="100dp"
+                            android:inputType="numberDecimal"
+                            android:enabled="false"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5">
+
+                    <ImageButton
+                        android:id="@+id/removeLocationButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/remove_location"
+                        android:background="@color/transparent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

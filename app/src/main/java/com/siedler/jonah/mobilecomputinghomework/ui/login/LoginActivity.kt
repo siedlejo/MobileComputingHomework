@@ -102,10 +102,12 @@ class LoginActivity : AppCompatActivity() {
 
         val reminders = AppDB.getInstance().reminderDao().getAllReminderOfUser(username)
         for (reminder: Reminder in reminders) {
-            val time = reminder.reminderTime.time - Date().time
-            val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
+            reminder.reminderTime?.let {
+                val time = it.time - Date().time
+                val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
 
-            NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+                NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+            }
         }
     }
 

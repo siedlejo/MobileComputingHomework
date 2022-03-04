@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
@@ -27,6 +29,13 @@ class AddReminderActivity: AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var textToSpeechButton: ImageButton
 
+    private lateinit var timeArea: ConstraintLayout
+    private lateinit var addTimeButton: ImageButton
+    private lateinit var removeTimeButton: ImageButton
+    private lateinit var locationArea: LinearLayout
+    private lateinit var addLocationButton: ImageButton
+    private lateinit var removeLocationButton: ImageButton
+
     private var reminder: Reminder? = null
 
     private var textToSpeechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -35,6 +44,15 @@ class AddReminderActivity: AppCompatActivity() {
             val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             val resultText = result?.get(0)
             messageEditText.setText(resultText)
+        }
+    }
+
+    private var selectLocationResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent = result.data!!
+            val locationX = data.getFloatExtra(SELECTED_LOCATION_X, 0F)
+            val locationY = data.getFloatExtra(SELECTED_LOCATION_Y, 0F)
+            addLocation(locationX, locationY)
         }
     }
 
@@ -68,6 +86,50 @@ class AddReminderActivity: AppCompatActivity() {
         textToSpeechButton.setOnClickListener {
             getSpeechInput()
         }
+
+        timeArea = findViewById(R.id.timeArea)
+        addTimeButton = findViewById(R.id.addTimeButton)
+        addTimeButton.setOnClickListener { addTime(Date()) }
+        removeTimeButton = findViewById(R.id.removeTimeButton)
+        removeTimeButton.setOnClickListener { removeTime() }
+
+        locationArea = findViewById(R.id.locationArea)
+        addLocationButton = findViewById(R.id.addLocationButton)
+        addLocationButton.setOnClickListener { selectLocationResultLauncher.launch(Intent(applicationContext, SelectLocationActivity::class.java)) }
+        removeLocationButton = findViewById(R.id.removeLocationButton)
+        removeLocationButton.setOnClickListener { removeLocation() }
+    }
+
+    private fun addTime(time: Date) {
+        val calendar = Calendar.getInstance()
+        calendar.time = (time)
+        timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
+        timePicker.minute = calendar.get(Calendar.MINUTE)
+        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+
+        addTimeButton.visibility = View.GONE
+        timeArea.visibility = View.VISIBLE
+    }
+
+    private fun removeTime() {
+        addTimeButton.visibility = View.VISIBLE
+        timeArea.visibility = View.GONE
+    }
+
+    private fun addLocation(locationX: Float, locationY: Float) {
+        locationXEditText.setText(locationX.toString())
+        locationYEditText.setText(locationY.toString())
+
+        addLocationButton.visibility = View.GONE
+        locationArea.visibility = View.VISIBLE
+    }
+
+    private fun removeLocation() {
+        locationXEditText.setText("")
+        locationYEditText.setText("")
+
+        addLocationButton.visibility = View.VISIBLE
+        locationArea.visibility = View.GONE
     }
 
     private fun getSpeechInput()
@@ -92,14 +154,14 @@ class AddReminderActivity: AppCompatActivity() {
         }
 
         title = getString(R.string.edit_reminder_view_title)
-        val calendar = Calendar.getInstance()
-        calendar.time = (reminder!!.reminderTime)
-        timePicker.hour = calendar.get(Calendar.HOUR_OF_DAY)
-        timePicker.minute = calendar.get(Calendar.MINUTE)
-        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+
+        reminder!!.reminderTime?.let {
+            addTime(it)
+        }
         messageEditText.setText(reminder!!.message)
-        locationXEditText.setText(reminder!!.locationX?.toString() ?: "")
-        locationYEditText.setText(reminder!!.locationY?.toString() ?: "")
+        if (reminder!!.locationX != null && reminder!!.locationY != null) {
+            addLocation(reminder!!.locationX!!.toFloat(), reminder!!.locationY!!.toFloat())
+        }
     }
 
     private fun saveReminder() {
@@ -130,20 +192,26 @@ class AddReminderActivity: AppCompatActivity() {
     }
 
     private fun scheduleReminderNotification(reminder: Reminder) {
-        val time = reminder.reminderTime.time - Date().time
-        val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
+        reminder.reminderTime?.let {
+            val time = it.time - Date().time
+            val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
 
-        NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+            NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+        }
     }
 
-    private fun getReminderTime(): Date {
-        val calendar: Calendar = GregorianCalendar(
-            datePicker.year,
-            datePicker.month,
-            datePicker.dayOfMonth,
-            timePicker.hour,
-            timePicker.minute
-        )
-        return calendar.time
+    private fun getReminderTime(): Date? {
+        return if (timeArea.visibility == View.VISIBLE) {
+            val calendar: Calendar = GregorianCalendar(
+                datePicker.year,
+                datePicker.month,
+                datePicker.dayOfMonth,
+                timePicker.hour,
+                timePicker.minute
+            )
+            calendar.time
+        } else {
+            null
+        }
     }
 }
