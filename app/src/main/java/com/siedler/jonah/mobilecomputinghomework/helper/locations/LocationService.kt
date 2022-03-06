@@ -22,7 +22,6 @@ class LocationService: Service() {
         val builder: NotificationCompat.Builder =
             NotificationCompat.Builder(this, DUMMY_NOTIFICATION_CHANNEL_ID)
                 .setOngoing(false)
-                .setSmallIcon(R.drawable.ic_launcher_background)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val notificationChannel = NotificationChannel(DUMMY_NOTIFICATION_CHANNEL_ID, DUMMY_NOTIFICATION_CHANNEL_ID, NotificationManager.IMPORTANCE_LOW)
