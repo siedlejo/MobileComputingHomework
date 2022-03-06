@@ -64,6 +64,7 @@ class ShowReminderLocationFragment: Fragment(), OnMapReadyCallback, GoogleMap.On
 
                 if (distance < THRESHOLD_DISTANCE) {
                     map.addMarker(MarkerOptions()
+                        .title(reminder.message)
                         .position(position)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)))
                 }
