@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -14,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.siedler.jonah.mobilecomputinghomework.R
-import com.siedler.jonah.mobilecomputinghomework.ui.home.SortingMode
 
 
 const val SELECTED_LOCATION_X = "SELECTED_LOCATION_X"

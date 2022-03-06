@@ -10,6 +10,11 @@
             android:title="@string/menu_home" />
 
         <item
+            android:id="@+id/nav_location_reminders"
+            android:icon="@drawable/ic_map"
+            android:title="@string/show_reminder_locations_view_title" />
+
+        <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/icon_logout"
             android:title="@string/logout" />

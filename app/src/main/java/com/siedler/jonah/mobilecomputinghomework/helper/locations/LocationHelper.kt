@@ -22,7 +22,7 @@ import kotlin.properties.Delegates
 private const val LOCATION_REFRESH_TIME: Long = 3000 // The Minimum Time to get location update in milliseconds
 private const val LOCATION_REFRESH_DISTANCE: Float = 10f // The Minimum Distance to be changed to get location update in meters
 const val LOCATION_PERMISSION_REQUEST_CODE = 23453
-const val THRESHOLD_DISTANCE = 1000
+const val THRESHOLD_DISTANCE = 5000 // in meters
 
 object LocationHelper {
     private var lastKnownLocation: Location? = null
