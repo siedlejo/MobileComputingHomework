@@ -15,6 +15,7 @@ import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
 import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
+import com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment
 
 private const val LOCATION_REFRESH_TIME: Long = 3000 // The Minimum Time to get location update in milliseconds
 private const val LOCATION_REFRESH_DISTANCE: Float = 10f // The Minimum Distance to be changed to get location update in meters
@@ -23,6 +24,7 @@ const val THRESHOLD_DISTANCE = 1000
 
 object LocationHelper {
     private var registeredReminderIdList: MutableSet<String> = HashSet()
+    private var lastKnownLocation: Location? = null
 
     // the permission check is handled in the function
     @SuppressLint("MissingPermission")
@@ -56,21 +58,32 @@ object LocationHelper {
     }
 
     private fun onLocationChanged(location: Location) {
+        this.lastKnownLocation = location
         for (id: String in registeredReminderIdList) {
             val reminder = AppDB.getInstance().reminderDao().getReminder(id)
             if (reminder?.locationX != null && reminder.locationY != null) {
-                var result = FloatArray(1)
-                Location.distanceBetween(location.latitude, location.longitude, reminder!!.locationY!!, reminder!!.locationX!!, result)
-                val distance = result[0]
-                if (distance < THRESHOLD_DISTANCE) {
-                    isNear(reminder)
+                if (isNear(reminder)) {
+                    triggerNotification(reminder)
                 }
             }
         }
+        HomeFragment.Instance?.getReminderListFromDB()
     }
 
-    private fun isNear(reminder: Reminder) {
-        NotificationHelper.sendNotification(reminder.reminderId, reminder.message, MyApplication.instance.getString(R.string.reminder_location_description))
+    fun isNear(reminder: Reminder): Boolean {
+        if (lastKnownLocation == null || reminder.locationX == null || reminder.locationY == null) {
+            return false
+        }
+        var result = FloatArray(1)
+        Location.distanceBetween(lastKnownLocation!!.latitude, lastKnownLocation!!.longitude, reminder!!.locationY!!, reminder!!.locationX!!, result)
+        val distance = result[0]
+        return distance < THRESHOLD_DISTANCE
+    }
+
+    private fun triggerNotification(reminder: Reminder) {
+        if (!reminder.reminderSeen) {
+            NotificationHelper.sendNotification(reminder.reminderId, reminder.message, MyApplication.instance.getString(R.string.reminder_location_description))
+        }
     }
 
     fun requestLocationPermission(activity: Activity) {

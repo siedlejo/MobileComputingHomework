@@ -193,7 +193,7 @@ class HomeFragment : Fragment() {
             false
         }
 
-        val locationRequirement = false //TODO
+        val locationRequirement =  LocationHelper.isNear(reminder)
 
         return !reminder.reminderSeen && (timingRequirement || locationRequirement)
     }
