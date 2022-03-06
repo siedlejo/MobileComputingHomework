@@ -14,8 +14,10 @@ import com.siedler.jonah.mobilecomputinghomework.MyApplication
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.PreferenceHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.home.HomeFragment
+import kotlin.properties.Delegates
 
 private const val LOCATION_REFRESH_TIME: Long = 3000 // The Minimum Time to get location update in milliseconds
 private const val LOCATION_REFRESH_DISTANCE: Float = 10f // The Minimum Distance to be changed to get location update in meters
@@ -23,8 +25,12 @@ const val LOCATION_PERMISSION_REQUEST_CODE = 23453
 const val THRESHOLD_DISTANCE = 1000
 
 object LocationHelper {
-    private var registeredReminderIdList: MutableSet<String> = HashSet()
     private var lastKnownLocation: Location? = null
+    private var registeredReminderIdList: MutableSet<String> = HashSet()
+
+    init {
+        registeredReminderIdList = PreferenceHelper().getLocationReminderList()
+    }
 
     // the permission check is handled in the function
     @SuppressLint("MissingPermission")
@@ -45,11 +51,13 @@ object LocationHelper {
     fun registerAllReminder(reminderList: List<Reminder>) {
         val idList = reminderList.map { it.reminderId }
         registeredReminderIdList.addAll(idList)
+        PreferenceHelper().storeLocationReminderList(registeredReminderIdList)
     }
 
     fun registerReminder(reminder: Reminder) {
         if (reminder.locationX != null && reminder.locationY != null) {
             registeredReminderIdList.add(reminder.reminderId)
+            PreferenceHelper().storeLocationReminderList(registeredReminderIdList)
         }
     }
 

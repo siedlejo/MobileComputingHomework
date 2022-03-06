@@ -7,6 +7,7 @@ import com.siedler.jonah.mobilecomputinghomework.MyApplication
 const val SHARED_PREFERENCES_KEY = "com.siedler.jonah.mobilecomputinghomework.MySharedPreferences"
 const val USER_NAME = "UserName"
 const val USER_PASSWORD_NAME = "UserPassword"
+const val LOCATION_REMINDER_LIST = "LocationReminderList"
 
 class PreferenceHelper {
     private val context: Context = MyApplication.instance.applicationContext
@@ -34,5 +35,13 @@ class PreferenceHelper {
 
     fun getUserPassword(): String {
         return sharedPreferences.getString(USER_PASSWORD_NAME, "")!!
+    }
+
+    fun storeLocationReminderList(value: Set<String>) {
+        sharedPreferences.edit().putStringSet(LOCATION_REMINDER_LIST, value).commit()
+    }
+
+    fun getLocationReminderList(): MutableSet<String> {
+        return sharedPreferences.getStringSet(LOCATION_REMINDER_LIST, HashSet())!!.toMutableSet()
     }
 }
