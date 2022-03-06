@@ -9,6 +9,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.siedler.jonah.mobilecomputinghomework.R
 
+
 const val DUMMY_NOTIFICATION_CHANNEL_ID = "MobileComputingHomeworkNotificationChannel"
 
 class LocationService: Service() {

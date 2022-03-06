@@ -1,14 +1,13 @@
 package com.siedler.jonah.mobilecomputinghomework
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.toUpperCase
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -21,6 +20,7 @@ import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationService
 import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import com.siedler.jonah.mobilecomputinghomework.ui.login.LoginActivity
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -100,12 +100,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE ->  {
-                if (grantResults[0] === PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[0] === PackageManager.PERMISSION_GRANTED && !isMyServiceRunning(LocationService::class.java)) {
                     ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, LocationService::class.java))
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun logout() {
