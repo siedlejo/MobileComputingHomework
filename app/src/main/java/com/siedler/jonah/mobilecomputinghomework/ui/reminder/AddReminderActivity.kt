@@ -51,8 +51,8 @@ class AddReminderActivity: AppCompatActivity() {
     private var selectLocationResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent = result.data!!
-            val locationX = data.getFloatExtra(SELECTED_LOCATION_X, 0F)
-            val locationY = data.getFloatExtra(SELECTED_LOCATION_Y, 0F)
+            val locationX = data.getDoubleExtra(SELECTED_LOCATION_X, 0.0)
+            val locationY = data.getDoubleExtra(SELECTED_LOCATION_Y, 0.0)
             addLocation(locationX, locationY)
         }
     }
@@ -117,7 +117,7 @@ class AddReminderActivity: AppCompatActivity() {
         timeArea.visibility = View.GONE
     }
 
-    private fun addLocation(locationX: Float, locationY: Float) {
+    private fun addLocation(locationX: Double, locationY: Double) {
         locationXEditText.setText(locationX.toString())
         locationYEditText.setText(locationY.toString())
 
@@ -161,7 +161,7 @@ class AddReminderActivity: AppCompatActivity() {
         }
         messageEditText.setText(reminder!!.message)
         if (reminder!!.locationX != null && reminder!!.locationY != null) {
-            addLocation(reminder!!.locationX!!.toFloat(), reminder!!.locationY!!.toFloat())
+            addLocation(reminder!!.locationX!!, reminder!!.locationY!!)
         }
     }
 
