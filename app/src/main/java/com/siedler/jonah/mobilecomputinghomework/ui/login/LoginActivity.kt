@@ -20,6 +20,8 @@ import com.siedler.jonah.mobilecomputinghomework.MainActivity
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LOCATION_PERMISSION_REQUEST_CODE
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.usersignup.UserSignupActivity
 import java.util.*

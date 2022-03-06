@@ -1,6 +1,7 @@
 package com.siedler.jonah.mobilecomputinghomework
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -8,12 +9,16 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toUpperCase
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.google.android.material.navigation.NavigationView
 import com.siedler.jonah.mobilecomputinghomework.databinding.ActivityMainBinding
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LOCATION_PERMISSION_REQUEST_CODE
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationHelper
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationService
 import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import com.siedler.jonah.mobilecomputinghomework.ui.login.LoginActivity
 
@@ -36,6 +41,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return
         }
 
+        setupView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        requestLocationPermission()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_logout -> logout()
+            else -> {
+                NavigationUI.onNavDestinationSelected(item, navController)
+                drawerLayout.closeDrawers()
+            }
+        }
+
+        return true
+    }
+
+    private fun setupView() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -62,20 +93,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         usernameTextView.text = firstName
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    private fun requestLocationPermission() {
+        LocationHelper.requestLocationPermission(this)
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_logout -> logout()
-            else -> {
-                NavigationUI.onNavDestinationSelected(item, navController)
-                drawerLayout.closeDrawers()
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE ->  {
+                if (grantResults[0] === PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, LocationService::class.java))
+                }
             }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
-
-        return true
     }
 
     private fun logout() {
