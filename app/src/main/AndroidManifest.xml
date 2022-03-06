@@ -49,7 +49,11 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".ui.reminder.SelectLocationActivity"
-            android:label="@string/select_location_view_title"/>
+            android:label="@string/select_location_view_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.reminder.AddReminderActivity" />
+        </activity>
         <service
             android:name=".helper.locations.LocationService"
             android:enabled="true"
