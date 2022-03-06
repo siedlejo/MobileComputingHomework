@@ -9,15 +9,20 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.siedler.jonah.mobilecomputinghomework.MyApplication
+import com.siedler.jonah.mobilecomputinghomework.R
+import com.siedler.jonah.mobilecomputinghomework.db.AppDB
+import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 
 private const val LOCATION_REFRESH_TIME: Long = 3000 // The Minimum Time to get location update in milliseconds
 private const val LOCATION_REFRESH_DISTANCE: Float = 10f // The Minimum Distance to be changed to get location update in meters
 const val LOCATION_PERMISSION_REQUEST_CODE = 23453
+const val THRESHOLD_DISTANCE = 1000
 
 object LocationHelper {
-    private var lastKnownLocation: Location? = null
+    private var registeredReminderIdList: MutableSet<String> = HashSet()
 
     // the permission check is handled in the function
     @SuppressLint("MissingPermission")
@@ -25,7 +30,6 @@ object LocationHelper {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val locationListener = LocationListener { location -> onLocationChanged(location) }
         if (!locationPermissionGranted(context)) {
-            Toast.makeText(context, "TODO no permission granted", Toast.LENGTH_LONG)
             return
         }
         locationManager.requestLocationUpdates(
@@ -36,18 +40,50 @@ object LocationHelper {
         )
     }
 
+    fun registerAllReminder(reminderList: List<Reminder>) {
+        val idList = reminderList.map { it.reminderId }
+        registeredReminderIdList.addAll(idList)
+    }
+
+    fun registerReminder(reminder: Reminder) {
+        if (reminder.locationX != null && reminder.locationY != null) {
+            registeredReminderIdList.add(reminder.reminderId)
+        }
+    }
+
+    fun deregisterReminder(reminder: Reminder) {
+        registeredReminderIdList.remove(reminder.reminderId)
+    }
+
     private fun onLocationChanged(location: Location) {
-        this.lastKnownLocation = location
-        println(location)
+        for (id: String in registeredReminderIdList) {
+            val reminder = AppDB.getInstance().reminderDao().getReminder(id)
+            if (reminder?.locationX != null && reminder.locationY != null) {
+                var result = FloatArray(1)
+                Location.distanceBetween(location.latitude, location.longitude, reminder!!.locationY!!, reminder!!.locationX!!, result)
+                val distance = result[0]
+                if (distance < THRESHOLD_DISTANCE) {
+                    isNear(reminder)
+                }
+            }
+        }
+    }
+
+    private fun isNear(reminder: Reminder) {
+        NotificationHelper.sendNotification(reminder.reminderId, reminder.message, MyApplication.instance.getString(R.string.reminder_location_description))
     }
 
     fun requestLocationPermission(activity: Activity) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE)
     }
 
     private fun locationPermissionGranted(context: Context): Boolean {
         val fineLocationGranted = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         val coarseLocationGranted = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        return fineLocationGranted && coarseLocationGranted
+        val backgroundLocationGranted = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        return fineLocationGranted && coarseLocationGranted && backgroundLocationGranted
     }
 }

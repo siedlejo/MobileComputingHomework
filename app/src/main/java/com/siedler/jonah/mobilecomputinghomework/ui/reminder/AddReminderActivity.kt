@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import java.util.*
@@ -188,6 +189,11 @@ class AddReminderActivity: AppCompatActivity() {
         }
 
         scheduleReminderNotification(reminder!!)
+        if (reminder!!.locationX != null && reminder!!.locationY != null) {
+            LocationHelper.registerReminder(reminder!!)
+        } else {
+            LocationHelper.deregisterReminder(reminder!!)
+        }
         finish()
     }
 
@@ -196,7 +202,9 @@ class AddReminderActivity: AppCompatActivity() {
             val time = it.time - Date().time
             val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
 
-            NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+            NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.reminder_time_description))
+        } ?: run {
+            NotificationHelper.cancelScheduledNotification(reminder.reminderId)
         }
     }
 

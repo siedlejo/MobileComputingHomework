@@ -20,8 +20,8 @@ class SelectLocationActivity: AppCompatActivity() {
         selectLocationButton = findViewById(R.id.selectLocationButton)
         selectLocationButton.setOnClickListener {
             val resultIntent = Intent()
-            resultIntent.putExtra(SELECTED_LOCATION_X, 45F)
-            resultIntent.putExtra(SELECTED_LOCATION_Y, 60F)
+            resultIntent.putExtra(SELECTED_LOCATION_X, 9.173581666666667F)
+            resultIntent.putExtra(SELECTED_LOCATION_Y, 48.781513333333336F)
             setResult(RESULT_OK, resultIntent)
             finish()
         }

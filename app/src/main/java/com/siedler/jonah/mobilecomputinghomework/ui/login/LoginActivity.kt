@@ -91,7 +91,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginSuccessful() {
-        scheduleNotifications()
+        val username = AuthenticationProvider.getAuthenticatedUser()?.userName ?: ""
+        val reminders = AppDB.getInstance().reminderDao().getAllReminderOfUser(username)
+        scheduleNotifications(reminders)
+        registerLocations(reminders)
 
         // navigate to the main activity
         val mainActivity = Intent(this, MainActivity::class.java)
@@ -99,16 +102,17 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun scheduleNotifications() {
-        val username = AuthenticationProvider.getAuthenticatedUser()?.userName ?: ""
+    private fun registerLocations(reminders: List<Reminder>) {
+        LocationHelper.registerAllReminder(reminders.filter { it.locationX != null && it.locationY != null })
+    }
 
-        val reminders = AppDB.getInstance().reminderDao().getAllReminderOfUser(username)
+    private fun scheduleNotifications(reminders: List<Reminder>) {
         for (reminder: Reminder in reminders) {
             reminder.reminderTime?.let {
                 val time = it.time - Date().time
                 val timeInSeconds = TimeUnit.MILLISECONDS.toSeconds(time)
 
-                NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.tap_to_open_in_app))
+                NotificationHelper.scheduleNotification(timeInSeconds, reminder.reminderId, reminder.message, getString(R.string.reminder_time_description))
             }
         }
     }

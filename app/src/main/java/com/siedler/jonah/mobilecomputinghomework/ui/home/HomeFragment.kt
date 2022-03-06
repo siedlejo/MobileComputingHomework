@@ -36,6 +36,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.siedler.jonah.mobilecomputinghomework.R
 import com.siedler.jonah.mobilecomputinghomework.db.AppDB
 import com.siedler.jonah.mobilecomputinghomework.db.reminder.Reminder
+import com.siedler.jonah.mobilecomputinghomework.helper.locations.LocationHelper
 import com.siedler.jonah.mobilecomputinghomework.helper.notifications.NotificationHelper
 import com.siedler.jonah.mobilecomputinghomework.ui.login.AuthenticationProvider
 import com.siedler.jonah.mobilecomputinghomework.ui.reminder.AddReminderActivity
@@ -207,6 +208,9 @@ class HomeFragment : Fragment() {
         // cancel the notification of this reminder
         NotificationHelper.cancelScheduledNotification(reminder.reminderId)
         NotificationHelper.removeNotification(reminder.reminderId)
+
+        // remove the location registration
+        LocationHelper.deregisterReminder(reminder)
 
         // remove the reminder from the database
         AppDB.getInstance().reminderDao().deleteReminder(reminder)
